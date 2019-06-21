@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cp ~/Dropbox/UDG/shddata/IPulse.dat ~/Dropbox/UDG/shddata/QPulse.dat /dev/shm
+

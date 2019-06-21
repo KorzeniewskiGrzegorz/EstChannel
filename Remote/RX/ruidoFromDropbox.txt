@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cp ~/Dropbox/UDG/shddata/ruidoR.dat ~/Dropbox/UDG/shddata/ruidoI.dat /dev/shm
+

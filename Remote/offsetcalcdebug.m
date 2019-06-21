@@ -1,6 +1,15 @@
-function [offset] = offsetcalc(signal,Fs,threshold,r)
+
 %UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+%   DEBUG
+load probka.mat
+signal=probka;
+clear probka
+Fs=20e6;
+threshold=0.003;
+r=0.3;
+
+%%%%%%5
+
 
 
 data=signal((1-r)*Fs:(1+r)*Fs);
@@ -20,8 +29,8 @@ for i=1:len
    end
 end
 
-%figure
-%plot(a)
+figure
+plot(a)
 
 
 lenA=size(a);
@@ -59,6 +68,4 @@ end
 
 offset=Fs- a(start+os-value);
 
-
-end
 

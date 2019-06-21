@@ -3,22 +3,10 @@ function [offset] = offsetcalc(signal,Fs,threshold,r)
 %   Detailed explanation goes here
 
 
-
-
-%[pks,locs] = findpeaks(probka((1-r)*Fs:(1+r)*Fs));
-
-
-
-%locs=locs+(1-r)*Fs;
-%data=[abs(pks),locs];
-
 data=signal((1-r)*Fs:(1+r)*Fs);
 
 %figure
 %plot(data)
-
-clear pks
-clear locs
 
 a=[];
 

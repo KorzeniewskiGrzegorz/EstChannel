@@ -1,9 +1,11 @@
 
 %UNTITLED2 Summary of this function goes here
 %   DEBUG
-load probka.mat
-signal=probka;
-clear probka
+path="/dev/shm/";
+fid=fopen(path+"dataR.dat",'rb');
+
+signal=fread(fid,'float');
+
 Fs=20e6;
 threshold=0.003;
 r=0.3;

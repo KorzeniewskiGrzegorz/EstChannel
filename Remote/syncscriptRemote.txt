@@ -1,0 +1,3 @@
+#!/bin/bash
+bladeRF-cli -d '*:serial=179' -e "set smb_mode input"
+bladeRF-cli -d '*:serial=32a' -e "set smb_mode input"

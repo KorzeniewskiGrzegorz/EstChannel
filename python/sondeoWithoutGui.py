@@ -17,6 +17,7 @@ import correctiq
 import osmosdr
 import time
 from threading import Timer
+import threading
 
 
 class top_block(gr.top_block):
@@ -113,14 +114,14 @@ class top_block(gr.top_block):
         self.osmosdr_sink_0.set_bandwidth(self.bandwidth, 0)
 
 
-def main(top_block_cls=top_block, options=None):
+def blader(e,top_block_cls=top_block, options=None):
 
     tb = top_block_cls()
     tb.start()
    
     start=time.time()
 
-    def finish():
+    def finish(e):
         end = time.time()
         print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
         print("transmission time: \t"+str(end-start)+"s")
@@ -129,10 +130,14 @@ def main(top_block_cls=top_block, options=None):
         print("\tbandwidth: \t"+str(tb.bandwidth)+"Hz")
         tb.stop()
         tb.wait()
+        e.set()
         
 
-    t = Timer(4, finish)
-    t.start() # after 30 seconds, "hello, world" will be printed     
+    t = Timer(4, finish, [e])
+    t.start() # after 30 seconds, "hello, world" will be printed      
 
 if __name__ == '__main__':
-    main()
+
+    result_available = threading.Event()
+    thread = threading.Thread(target=blader, args=(result_available,))
+    thread.start()

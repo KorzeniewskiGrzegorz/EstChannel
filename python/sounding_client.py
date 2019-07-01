@@ -1,6 +1,7 @@
 # RX, where the data is generated and processed
 import socket
 import paramiko
+import os
 
 import threading
 from whiteNoiseGen import whiteNoiseGen
@@ -12,8 +13,10 @@ from cryptography.fernet import Fernet
 HOST = '192.168.10.3'         # The remote host
 #HOST = '127.0.0.1'   
 PORT = 50007             # The same port as used by the server
-ipUdg = '192.168.10.4'
-ipGrzechu = '192.168.10.3'
+#ip = '192.168.10.4'
+ip = '192.168.10.3'
+name = "grzechu"
+#name = "udg"
 
 conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 conn.connect((HOST, PORT))
@@ -29,30 +32,7 @@ whiteNoiseGen(Fs)
 ######################
 
 
-
-text_file = open("/home/udg/Escritorio/klucz.txt", "r")
-key=text_file.read()
-
-with open('/home/udg/Escritorio/hasloDom.bin', 'rb') as file_object:
-    for line in file_object:
-        encryptedpwd = line
-
-
-cipher_suite = Fernet(key)
-unciphered_text = (cipher_suite.decrypt(encryptedpwd))
-
-ssh_client =paramiko.SSHClient() 
-ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy()) 
-ssh_client.connect(hostname=ipGrzechu,username='grzechu',password=unciphered_text)
-
-ftp_client=ssh_client.open_sftp() 
-ftp_client.put('/dev/shm/IPulse.dat','/dev/shm/IPulse.dat') 
-ftp_client.put('/dev/shm/QPulse.dat','/dev/shm/QPulse.dat') 
-ftp_client.close()
-###
-
-
-
+os.system("scp -i ~/.ssh/id_rsa.pub /dev/shm/IPulse.dat /dev/shm/QPulse.dat "+ name +"@"+ip+":/dev/shm/")
 
 
 response =""

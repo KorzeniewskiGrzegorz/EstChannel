@@ -30,7 +30,7 @@ def dataProcess(Fs , #Sample freq
 
 
 
-	offset = offcalc(dataC.real,Fs,0.003,0.05)
+
 
 	#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	#Calibration processing
@@ -43,7 +43,7 @@ def dataProcess(Fs , #Sample freq
 
 
 	# signal calibration
-	offset =(-1) *(offcalc(dataC.real,Fs,0.003,0.1))-offman  #received samples offset due to hardware & software lag [samples];
+	offset =(-1) *(offcalc(dataC.real,Fs,0.003,0.5,calibrationOffsetTime))-offman  #received samples offset due to hardware & software lag [samples];
 
 	ruidoC = ruidoC[ int(calibrationOffset)    :    int(calibrationOffset*2-(Fs/F)*(1-R)) ];
 	#print(ruidoC[int(calibrationOffset)])

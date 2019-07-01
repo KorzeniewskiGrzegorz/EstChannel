@@ -4,14 +4,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
 
-def offcalc(signal,Fs,threshold,r):
+def offcalc(signal,Fs,threshold,r,calibrationTime):
 	
-	data = signal[int((1-r)*Fs):int((1+r)*Fs)]
+	data = signal[int((calibrationTime-r)*Fs):int((calibrationTime+r)*Fs)]
 
 	a = []
-	for i in range(0,len(data)-1):
+	for i in range(0,len(data)):
 		if data[i] < threshold:
-			a.append(i +(1-r)*Fs)     
+			a.append(i +(calibrationTime-r)*Fs)     
 	   
 
 	#plt.plot(a)
@@ -25,7 +25,7 @@ def offcalc(signal,Fs,threshold,r):
 	#plt.plot(der)
 	#plt.show()
 
-	for i in range(0,v-1):
+	for i in range(0,v):
 		count = 0
 		for j in range(0,980):
 			if der[int(i*1000+j)]== der[int(i*1000+j+1)]:

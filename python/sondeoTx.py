@@ -33,7 +33,7 @@ from threading import Timer
 
 class top_block(gr.top_block, Qt.QWidget):
 
-    def __init__(self):
+    def __init__(self,sr):
         gr.top_block.__init__(self, "Top Block")
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Top Block")
@@ -64,7 +64,7 @@ class top_block(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.samp_rate = samp_rate = 20e6
+        self.samp_rate = samp_rate = sr
         self.freq = freq = 2400e6
         self.bandwidth = bandwidth = 1.5e6
 
@@ -127,14 +127,14 @@ class top_block(gr.top_block, Qt.QWidget):
         self.osmosdr_sink_0.set_bandwidth(self.bandwidth, 0)
 
 
-def sondeoTx(top_block_cls=top_block, options=None):
+def sondeoTx(sr,top_block_cls=top_block, options=None):
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
         style = gr.prefs().get_string('qtgui', 'style', 'raster')
         Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
 
-    tb = top_block_cls()
+    tb = top_block_cls(sr)
     tb.start()
     tb.show()
     start=time.time()
@@ -156,4 +156,4 @@ def sondeoTx(top_block_cls=top_block, options=None):
     qapp.exec_()
 
 if __name__ == '__main__':
-    main()
+    sondeoTx(20e6)

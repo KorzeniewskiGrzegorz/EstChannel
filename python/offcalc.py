@@ -18,7 +18,7 @@ def offcalc(signal,Fs,threshold,r,calibrationTime):
 	#plt.show()
 
 
-	v=int(np.floor(len(a)/1000));
+	v=int(np.floor(len(a)/10000));
 	der=np.diff(a);
 
 
@@ -27,15 +27,15 @@ def offcalc(signal,Fs,threshold,r,calibrationTime):
 
 	for i in range(0,v):
 		count = 0
-		for j in range(0,980):
-			if der[int(i*1000+j)]== der[int(i*1000+j+1)]:
+		for j in range(0,9800):
+			if der[int(i*10000+j)]== der[int(i*10000+j+1)]:
 				count +=1
 	        
-			if count > 950:
-				start = i*1000 
+			if count > 9500:
+				start = i*10000 
 	               
 
-	pId,prop = find_peaks( der[int(start):int(start+2000)], height=2);
+	pId,prop = find_peaks( der[int(start):int(start+20000)], height=2);
 
 
 	peak_id = pId[0]

@@ -79,7 +79,7 @@ calibrationOffset = calibrationOffsetTime*Fs ; % conversion from time to samples
 
 
 % signal calibration
-offset =(-1) *(offsetcalc(real(dataC),Fs,0.003,0.05))-offman ; % received samples offset due to hardware & software lag [samples] -117106;
+offset =(-1) *(offsetcalc(real(dataC),Fs,0.003,0.5))-offman ; % received samples offset due to hardware & software lag [samples] -117106;
 
 
 dataC=dataC(calibrationOffset+offset+1:calibrationOffset*2+offset-(Fs/F)*(1-R)+2);

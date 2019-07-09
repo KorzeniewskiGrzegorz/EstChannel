@@ -12,6 +12,7 @@ from gnuradio import gr
 from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
 from optparse import OptionParser
+import correctiq
 import osmosdr
 import time
 from threading import Timer
@@ -41,6 +42,7 @@ class top_block(gr.top_block):
         self.osmosdr_sink_0.set_antenna('TX', 0)
         self.osmosdr_sink_0.set_bandwidth(bandwidth, 0)
 
+        self.correctiq_correctiq_0 = correctiq.correctiq()
         self.blocks_float_to_complex_0 = blocks.float_to_complex(1)
         self.blocks_file_source_0_0 = blocks.file_source(gr.sizeof_float*1, '/dev/shm/QPulse.dat', True)
         self.blocks_file_source_0 = blocks.file_source(gr.sizeof_float*1, '/dev/shm/IPulse.dat', True)
@@ -57,9 +59,9 @@ class top_block(gr.top_block):
         self.connect((self.blocks_complex_to_float_0, 0), (self.blocks_file_sink_0_0_0_0_0_0, 0))
         self.connect((self.blocks_file_source_0, 0), (self.blocks_float_to_complex_0, 0))
         self.connect((self.blocks_file_source_0_0, 0), (self.blocks_float_to_complex_0, 1))
-        self.connect((self.blocks_float_to_complex_0, 0), (self.blocks_complex_to_float_0, 0))
-        self.connect((self.blocks_float_to_complex_0, 0), (self.osmosdr_sink_0, 0))
-
+        self.connect((self.blocks_float_to_complex_0, 0), (self.correctiq_correctiq_0, 0))
+        self.connect((self.correctiq_correctiq_0, 0), (self.blocks_complex_to_float_0, 0))
+        self.connect((self.correctiq_correctiq_0, 0), (self.osmosdr_sink_0, 0))
 
     def get_samp_rate(self):
         return self.samp_rate

@@ -17,12 +17,12 @@ def sounding_client(Fs,
 
 	#os.system("bladeRF-cli -d '*:serial=179' -e \"set smb_mode input\"")
 
-	HOST = '192.168.10.2'         # The remote host
+	HOST = '192.168.10.10'         # The remote host
 	#HOST = '127.0.0.1'   
 	PORT = 50007             # The same port as used by the server
 	#ip = '192.168.10.4'
-	ip = '192.168.10.2'
-	name = "gregor"
+	ip = HOST
+	name = "pi"
 	#name = "udg"
 
 	conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

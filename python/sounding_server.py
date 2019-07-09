@@ -32,15 +32,22 @@ def server_work(s,Fs,name):
 
 			if data == "start":
 				
-		        	sondeoTx(Fs)
-		        	message = "sending tx data ..." 
-		        	conn.send(message.encode())
-		        	os.system("scp -i ~/.ssh/id_rsa.pub /dev/shm/ruido* "+name +"@"+str(addr[0])+":/dev/shm/")
-		        	message = "done" 
-		        	conn.send(message.encode())
-		        	print("Finish")
-		        	
-		        	shutConn=True
+				result_available = threading.Event()
+
+				thread = threading.Thread(target=sondeoTx, args=(Fs,result_available,))
+				thread.start()
+
+	        	result_available.wait()
+
+
+	        	message = "sending tx data ..." 
+	        	conn.send(message.encode())
+	        	os.system("scp -i ~/.ssh/id_rsa.pub /dev/shm/ruido* "+name +"@"+str(addr[0])+":/dev/shm/")
+	        	message = "done" 
+	        	conn.send(message.encode())
+	        	print("Finish")
+	        	
+	        	shutConn=True
 
 
 

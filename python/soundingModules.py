@@ -1,12 +1,33 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-##################################################
-# GNU Radio Python Flow Graph
-# Title: Top Block
-# Generated: Wed Jun 26 15:05:27 2019
-##################################################
+import sys
+import numpy as np 
+import matplotlib.pyplot as plt
 
 
+
+
+def whiteNoiseGen(Fs,R =0.99,segundos = 1,path ='/dev/shm/'):
+
+	pulseLen = int(Fs*segundos)
+	IPulse = np.zeros(int(Fs*segundos))
+
+	IPulse[0:int(Fs*segundos- Fs*segundos*(1-R))] = np.random.randn(1,int(Fs*segundos - Fs*segundos*(1-R)))
+
+
+	QPulse = np.zeros(int(Fs*segundos))
+
+	#t=np.linspace(0, segundos, num=pulseLen)
+
+	#plt.plot(t,IPulse,'b',t,QPulse,'r')
+	#plt.show()
+
+
+
+	IPulse.astype('float32').tofile(path + 'IPulse.dat')
+	QPulse.astype('float32').tofile(path + 'QPulse.dat')
+	print("whiteNoiseGen - Done")
+	print("Created files to path "+path)
+
+##############################################################3
 from gnuradio import blocks
 from gnuradio import eng_notation
 from gnuradio import gr
@@ -17,7 +38,6 @@ import correctiq
 import osmosdr
 import time
 from threading import Timer
-import threading
 
 
 class top_block(gr.top_block):
@@ -114,7 +134,7 @@ class top_block(gr.top_block):
         self.osmosdr_sink_0.set_bandwidth(self.bandwidth, 0)
 
 
-def blader(e,top_block_cls=top_block, options=None):
+def blader(e, top_block_cls=top_block, options=None):
 
     tb = top_block_cls()
     tb.start()
@@ -134,10 +154,93 @@ def blader(e,top_block_cls=top_block, options=None):
         
 
     t = Timer(4, finish, [e])
-    t.start() # after 30 seconds, "hello, world" will be printed      
+    t.start() # after 30 seconds, "hello, world" will be printed     
 
-if __name__ == '__main__':
 
-    result_available = threading.Event()
-    thread = threading.Thread(target=blader, args=(result_available,))
-    thread.start()
+##########################################################################
+
+
+from offcalc import offcalc
+
+def dataProcess(Fs , #Sample freq
+	R = 0.99, # ratio, the same as in generator script
+	calibrationOffsetTime = 1,# calibration time [s] , corresponds to parameters of signal generation
+	offman = 0,
+	wd = 10,
+	path = "/dev/shm/",
+	offsetThreshold = 0.003,
+	offsetTime = 0.1):
+
+
+	#%%%%%%%%%5%%%%%%%%%%%%%
+	ruidoR = np.fromfile(path + "ruidoR.dat",'float32')
+	ruidoI = np.fromfile(path + "ruidoI.dat",'float32')
+	ruidoC = ruidoR + 1j * ruidoI
+	del ruidoR,ruidoI
+
+	dataR = np.fromfile(path + "dataR.dat",'float32')
+	dataI = np.fromfile(path + "dataI.dat",'float32')
+	dataC = dataR + 1j * dataI
+	del dataR,dataI
+
+	lenRRaw=len(ruidoC)
+	lenDRaw=len(dataC)
+
+
+
+	offset = offcalc(dataC.real,Fs,0.003,0.05)
+
+	#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	#Calibration processing
+
+
+	F = 1/calibrationOffsetTime
+	calibrationOffset = calibrationOffsetTime * Fs  #conversion from time to samples
+
+
+
+
+	# signal calibration
+	offset =(-1) *(offcalc(dataC.real,Fs,offsetThreshold,offsetTime))-offman  #received samples offset due to hardware & software lag [samples];
+
+	ruidoC = ruidoC[ int(calibrationOffset)    :    int(calibrationOffset*2-(Fs/F)*(1-R)) ];
+	#print(ruidoC[int(calibrationOffset)])
+	#print(ruidoC[int(calibrationOffset)-1])
+	#print(ruidoC[int(calibrationOffset*2-(Fs/F)*(1-R))])
+	#print(ruidoC[int(calibrationOffset*2-(Fs/F)*(1-R))-1])
+
+	dataC = dataC[int(calibrationOffset+offset)    :    int(calibrationOffset*2-(Fs/F)*(1-R) +offset)  ];
+
+	#plt.plot(dataC.real)
+	#plt.show()
+
+	lenR=len(ruidoC)
+	lenD=len(dataC)
+
+
+	#TODO
+	#calibrated data plotting
+
+
+	N=int( wd*Fs/1000000) # conversion of window duration from miliseconds to samples
+
+	v=int(np.floor(lenD/N)) # number of pulses recorded
+	PA = np.zeros((v,N)) + 1j * np.zeros((v,N))
+
+
+	for i in range(0,v):# Run cross correlation for v times
+	    
+		x=ruidoC[int(i*N) : int(i*N+N)] #TX
+		y=dataC[int(i*N)  : int(i*N+N)] # RX
+		
+		rxy=np.correlate( x, np.conj(y) , 'full' ) # Cross correlation of the TX and RX conjugated data
+		Ryx=np.flip(rxy[0:N],0) # Flip the correlation result and take the first N samples (Ryx(t) = Rxy(-t)
+		PA[i] = Ryx
+
+	Ryx = PA.mean(axis=0)
+
+	plt.plot(np.abs(Ryx))
+	plt.show()
+
+
+

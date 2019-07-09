@@ -14,8 +14,7 @@ def dataProcess(Fs , #Sample freq
 	wd = 10,
 	path = "/dev/shm/",
 	offsetThreshold = 0.003,
-	offsetTime = 0.1,
-	plotMode=True):
+	offsetTime = 0.1):
 	ruidoR = np.fromfile(path + "ruidoR.dat",'float32')
 	ruidoI = np.fromfile(path + "ruidoI.dat",'float32')
 	ruidoC = ruidoR + 1j * ruidoI
@@ -26,12 +25,12 @@ def dataProcess(Fs , #Sample freq
 	dataC = dataR + 1j * dataI
 	del dataR,dataI
 
-	#lenRRaw=len(ruidoC)
-	#lenDRaw=len(dataC)
+	lenRRaw=len(ruidoC)
+	lenDRaw=len(dataC)
 
 
 
-
+	offset = offcalc(dataC.real,Fs,0.003,0.05)
 
 	#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	#Calibration processing
@@ -44,7 +43,7 @@ def dataProcess(Fs , #Sample freq
 
 
 	# signal calibration
-	offset =(-1) *(offcalc(np.abs(dataC),Fs,offsetThreshold,offsetTime,calibrationOffsetTime))-offman  #received samples offset due to hardware & software lag [samples];
+	offset =(-1) *(offcalc(dataC.real,Fs,0.003,0.1))-offman  #received samples offset due to hardware & software lag [samples];
 
 	ruidoC = ruidoC[ int(calibrationOffset)    :    int(calibrationOffset*2-(Fs/F)*(1-R)) ];
 	#print(ruidoC[int(calibrationOffset)])
@@ -81,24 +80,20 @@ def dataProcess(Fs , #Sample freq
 		PA[i] = Ryx
 
 	Ryx = PA.mean(axis=0)
-	Ryx = np.abs(Ryx)
 
-	if plotMode :
-		plt.plot(np.abs(Ryx))
-		plt.show()
-	else:
-		return Ryx
+	plt.plot(np.abs(Ryx))
+	plt.show()
 
 
 def main():
 	Fs = 20e6 #Sample freq
 	R = 0.99; # ratio, the same as in generator script
 	calibrationOffsetTime = 1# calibration time [s] , corresponds to parameters of signal generation
-	offman = 0;
+	offman = 30;
 	wd = 10; # window duration [us] for the correlation purpose
 	path = "/dev/shm/"
 
-	dataProcess(Fs,R,calibrationOffsetTime,offman,wd,path,offsetTime = 0.5,offsetThreshold = 0.002)
+	dataProcess(Fs,R,calibrationOffsetTime,offman,wd,path)
 
 
 if __name__ == '__main__':

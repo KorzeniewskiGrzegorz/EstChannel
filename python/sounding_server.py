@@ -1,13 +1,10 @@
 # TX, only task is to wait for a signal to start to transmitt and then send back ruido data
 import socket
-import paramiko
+
 import os
 import sys
 
 import threading
-from whiteNoiseGen import whiteNoiseGen
-from sondeoWithoutGui import *
-from dataProcess import dataProcess
 from sondeoTx import *
 
 

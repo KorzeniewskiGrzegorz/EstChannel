@@ -173,7 +173,7 @@ def sondeoRx(sr,top_block_cls=top_block, options=None):
         print("\tcarr freq: \t"+str(tb.freq)+"Hz")
         print("\tbandwidth: \t"+str(tb.bandwidth)+"Hz")
         tb.stop()
-        tb.wait()
+        
         QtCore.QCoreApplication.instance().quit()
 
     t = Timer(4, finish)

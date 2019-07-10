@@ -7,7 +7,7 @@ format long
 %%%%%%%%%%%%%%%%%%%%%%%
 
 
-Fs=20e6; %Sample freq
+Fs=10e6; %Sample freq
 
 path="/dev/shm/";
 
@@ -31,13 +31,13 @@ dataI=fread(fid,'float');
 
 lenDRaw=length(dataR(:,1));
 
-%dataC=complex(dataR,dataI); 
+dataC=complex(dataR,dataI); 
 
 %Raw data plotting
 
 figure
 
-plot(0:1/Fs:lenDRaw/Fs-1/Fs,dataR,0:1/Fs:lenDRaw/Fs-1/Fs,dataI)
+plot(0:1/Fs:lenDRaw/Fs-1/Fs,abs(dataC))%,0:1/Fs:lenDRaw/Fs-1/Fs,dataI)
 title('Rx Raw Data')
 xlabel('time [s]')
 

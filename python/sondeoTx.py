@@ -6,19 +6,6 @@
 # Generated: Fri Jun 21 12:48:15 2019
 ##################################################
 
-from distutils.version import StrictVersion
-
-if __name__ == '__main__':
-    import ctypes
-    import sys
-    if sys.platform.startswith('linux'):
-        try:
-            x11 = ctypes.cdll.LoadLibrary('libX11.so')
-            x11.XInitThreads()
-        except:
-            print "Warning: failed to XInitThreads()"
-
-from PyQt5 import Qt, QtCore
 from gnuradio import blocks
 from gnuradio import eng_notation
 from gnuradio import gr
@@ -26,41 +13,14 @@ from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
 from optparse import OptionParser
 import osmosdr
-import sys
 import time
-from gnuradio import qtgui
 from threading import Timer
+import threading
 
-class top_block(gr.top_block, Qt.QWidget):
+class top_block(gr.top_block):
 
     def __init__(self,sr):
         gr.top_block.__init__(self, "Top Block")
-        Qt.QWidget.__init__(self)
-        self.setWindowTitle("Top Block")
-        qtgui.util.check_set_qss()
-        try:
-            self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
-        except:
-            pass
-        self.top_scroll_layout = Qt.QVBoxLayout()
-        self.setLayout(self.top_scroll_layout)
-        self.top_scroll = Qt.QScrollArea()
-        self.top_scroll.setFrameStyle(Qt.QFrame.NoFrame)
-        self.top_scroll_layout.addWidget(self.top_scroll)
-        self.top_scroll.setWidgetResizable(True)
-        self.top_widget = Qt.QWidget()
-        self.top_scroll.setWidget(self.top_widget)
-        self.top_layout = Qt.QVBoxLayout(self.top_widget)
-        self.top_grid_layout = Qt.QGridLayout()
-        self.top_layout.addLayout(self.top_grid_layout)
-
-        self.settings = Qt.QSettings("GNU Radio", "top_block")
-
-        if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-            self.restoreGeometry(self.settings.value("geometry").toByteArray())
-        else:
-            self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
-
         ##################################################
         # Variables
         ##################################################
@@ -100,10 +60,6 @@ class top_block(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_float_to_complex_0, 0), (self.blocks_complex_to_float_0, 0))
         self.connect((self.blocks_float_to_complex_0, 0), (self.osmosdr_sink_0, 0))
 
-    def closeEvent(self, event):
-        self.settings = Qt.QSettings("GNU Radio", "top_block")
-        self.settings.setValue("geometry", self.saveGeometry())
-        event.accept()
 
     def get_samp_rate(self):
         return self.samp_rate
@@ -127,33 +83,36 @@ class top_block(gr.top_block, Qt.QWidget):
         self.osmosdr_sink_0.set_bandwidth(self.bandwidth, 0)
 
 
-def sondeoTx(sr,top_block_cls=top_block, options=None):
-
-    if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-        style = gr.prefs().get_string('qtgui', 'style', 'raster')
-        Qt.QApplication.setGraphicsSystem(style)
-    qapp = Qt.QApplication(sys.argv)
+def sondeoTx(sr,e,top_block_cls=top_block, options=None):
 
     tb = top_block_cls(sr)
     tb.start()
-    tb.show()
+   
     start=time.time()
 
-    def finish():
+    def finish(e):
         end = time.time()
-        print("%%%%%%%%%%%            TX             %%%%%%%%%%%%%%%%")
-        print(" transmission time: \t"+str(end-start)+"s")
+        print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+        print("transmission time: \t"+str(end-start)+"s")
         print("\tsamp rate: \t"+str(tb.samp_rate)+" samples/s")
         print("\tcarr freq: \t"+str(tb.freq)+"Hz")
         print("\tbandwidth: \t"+str(tb.bandwidth)+"Hz")
         tb.stop()
         tb.wait()
-        QtCore.QCoreApplication.instance().quit()
+        e.set()
+        
 
-    t = Timer(4, finish)
-    t.start() # after 30 seconds, "hello, world" will be printed     
-
-    qapp.exec_()
+    t = Timer(4, finish, [e])
+    t.start() # after 30 seconds, "hello, world" will be printed      
 
 if __name__ == '__main__':
-    sondeoTx(20e6)
+
+    result_available = threading.Event()
+    thread = threading.Thread(target=sondeoTx, args=(20e6,result_available,))
+    thread.start()
+    print("transmitting...")
+    result_available.wait()
+    print("done")
+
+
+                

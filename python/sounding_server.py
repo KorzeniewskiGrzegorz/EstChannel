@@ -1,13 +1,10 @@
 # TX, only task is to wait for a signal to start to transmitt and then send back ruido data
 import socket
-import paramiko
+
 import os
 import sys
 
 import threading
-from whiteNoiseGen import whiteNoiseGen
-from sondeoWithoutGui import *
-from dataProcess import dataProcess
 from sondeoTx import *
 
 
@@ -35,15 +32,22 @@ def server_work(s,Fs,name):
 
 			if data == "start":
 				
-		        	sondeoTx(Fs)
-		        	message = "sending tx data ..." 
-		        	conn.send(message.encode())
-		        	os.system("scp -i ~/.ssh/id_rsa.pub /dev/shm/ruido* "+name +"@"+str(addr[0])+":/dev/shm/")
-		        	message = "done" 
-		        	conn.send(message.encode())
-		        	print("Finish")
-		        	
-		        	shutConn=True
+				result_available = threading.Event()
+
+				thread = threading.Thread(target=sondeoTx, args=(Fs,result_available,))
+				thread.start()
+
+	        	result_available.wait()
+
+
+	        	message = "sending tx data ..." 
+	        	conn.send(message.encode())
+	        	os.system("scp -i ~/.ssh/id_rsa.pub /dev/shm/ruido* "+name +"@"+str(addr[0])+":/dev/shm/")
+	        	message = "done" 
+	        	conn.send(message.encode())
+	        	print("Finish")
+	        	
+	        	shutConn=True
 
 
 

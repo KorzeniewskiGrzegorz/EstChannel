@@ -2,17 +2,20 @@
 import socket
 import paramiko
 import os
-import traceback
 
 import threading
 from whiteNoiseGen import whiteNoiseGen
 from sondeoWithoutGui import *
 from dataProcess import dataProcess
 from sondeoRx import *
-from scipy.ndimage.interpolation import shift
+import Queue
+
+
 
 def sounding_client(Fs,
-					plotMode=False,
+					event,
+					plotMode,
+					outputQueue,
 					path = '/dev/shm/',
 					wd = 10,
 					):
@@ -30,17 +33,14 @@ def sounding_client(Fs,
 	conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	conn.connect((HOST, PORT))
 
-	print '<'*80 
-	print '<'*80 
-	print "INIT"
+
 	whiteNoiseGen(Fs)
 
 	######################
 
-	
-	print("Sending generated noise ..."),
+
 	os.system("scp -i ~/.ssh/id_rsa.pub /dev/shm/IPulse.dat /dev/shm/QPulse.dat "+ name +"@"+ip+":/dev/shm/")
-	print("Done")
+
 
 	response =""
 	message = "start"  # 
@@ -69,22 +69,25 @@ def sounding_client(Fs,
 	
 	try:
 		Ryx = dataProcess(Fs,offman=0,wd=wd,path=path,offsetTime = 0.5,offsetThreshold = 0.004,plotMode=plotMode)
-		return Ryx
+		outputQueue.put(Ryx)
+		event.set() # event set
 	except ValueError as err:
-		print "Exception in user code:"
-        print '-'*60
-        traceback.print_exc(file=sys.stdout)
-        print '-'*60
-        return None
-			
+		print("Unexpected error:", sys.exc_info()[0])
+		event.set() # event set
+	
 
 def main():
 
-
+		Ryx = -1;
+		myQueue = Queue.Queue()
 		Fs = 20e6
-		Ryx = None
+		result_available = threading.Event()
+		thread = threading.Thread(target=sounding_client, args=(Fs,result_available,False,myQueue))
+		thread.start()
 		print("transmitting...")
-		Ryx = sounding_client(Fs)
+		result_available.wait()
+		if myQueue.empty() is not True:
+			Ryx = myQueue.get()
 
 		print("done")
 		print(Ryx)

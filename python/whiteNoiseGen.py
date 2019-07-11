@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 
 def whiteNoiseGen(Fs,R =0.99,segundos = 1,path ='/dev/shm/'):
 
-
+	print("whiteNoiseGen - Generating ...")
+	
 	pulseLen = int(Fs*segundos)
 	IPulse = np.zeros(int(Fs*segundos))
 

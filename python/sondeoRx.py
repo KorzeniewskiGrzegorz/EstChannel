@@ -167,11 +167,12 @@ def sondeoRx(sr,top_block_cls=top_block, options=None):
 
     def finish():
         end = time.time()
-        print("%%%%%%%%%%%%            Rx           %%%%%%%%%%%%%%%%%%%%%%")
-        print("transmission time: \t"+str(end-start)+"s")
+        print("%%%%%%%%%%%%            Rx          %%%%%%%%%%%%%%%%%%%%%%%%")
+        print("transmission time: \t"+str(end-start)+" s")
         print("\tsamp rate: \t"+str(tb.samp_rate)+" samples/s")
-        print("\tcarr freq: \t"+str(tb.freq)+"Hz")
-        print("\tbandwidth: \t"+str(tb.bandwidth)+"Hz")
+        print("\tcarr freq: \t"+str(tb.freq)+" Hz")
+        print("\tbandwidth: \t"+str(tb.bandwidth)+" Hz")
+        print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
         tb.stop()
         
         QtCore.QCoreApplication.instance().quit()

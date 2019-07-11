@@ -9,7 +9,7 @@ from whiteNoiseGen import whiteNoiseGen
 from sondeoWithoutGui import *
 from dataProcess import dataProcess
 from sondeoRx import *
-
+from scipy.ndimage.interpolation import shift
 
 def sounding_client(Fs,
 					plotMode=False,
@@ -30,7 +30,9 @@ def sounding_client(Fs,
 	conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	conn.connect((HOST, PORT))
 
-
+	print '<'*80 
+	print '<'*80 
+	print "INIT"
 	whiteNoiseGen(Fs)
 
 	######################

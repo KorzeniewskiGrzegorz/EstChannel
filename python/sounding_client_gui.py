@@ -30,7 +30,7 @@ class StdRedirector(object):
     def write(self, string):
         self.text_space.config(state=NORMAL)
         self.text_space.insert("end", string)
-        self.text_space.see("end")
+        #self.text_space.see("end")
         self.text_space.config(state=DISABLED)
 
 class Shifted:
@@ -62,7 +62,7 @@ def work():
 	executebutton.config(state=DISABLED)
 	plt.clf()
 	plt.ylabel('Amplitude')
-	plt.xlabel('Time [ns]')
+	plt.xlabel('Time [us]')
 	fig.canvas.draw()
 
 	Ryx = sounding_client(Fs)
@@ -114,12 +114,13 @@ def updatePlot():
 	plt.clf()
 	plt.plot(t,Ryx)
 	plt.ylabel('Amplitude')
-	plt.xlabel('Time [ns]')
+	plt.xlabel('Time [us]')
 	fig.canvas.draw()
 	
 	updateEntry()
 	savebutton.config(state=NORMAL)
-	
+	rerunbutton.config(state=NORMAL)
+	entryRerun.config(state=NORMAL)
 
 
 def save(p):
@@ -128,7 +129,16 @@ def save(p):
 	print ("Impulse response saved in "+p)
 	updateEntry()
 
+def rerun(p):
+	global Ryx,shiftedRyx
+	print("reruning data processing with offset{}".format(p))
 
+	Ryx = dataProcess(Fs,offman=int(p),offsetTime = 0.5,offsetThreshold = 0.004,plotMode=False)
+	shiftedRyx = Shifted(Ryx)
+	updatePlot()
+	print("Done")
+	print '>'*80 
+	print '>'*80 
 
 
 def updateShift(direction):
@@ -153,21 +163,24 @@ w, h = 300, 200
 root = Tk()
 root.title("siema")
 root.protocol('WM_DELETE_WINDOW', _destroyWindow)
-root.geometry("1430x500")
+root.geometry("1500x800")
 
 mainframe = Frame(root)
-mainframe.grid(column=0, row=0)
+mainframe.pack(side = LEFT)
 
 
 executebutton = Button(mainframe, text="Run", command=start)
-executebutton.grid(column=0, row=5)              
+executebutton.pack(side = BOTTOM)              
 
 
 text_box = Text(mainframe)
-text_box.grid(column=1, row=5)
+text_box.pack()
 sys.stdout = StdRedirector(text_box)
 
 ###########
+
+dataframe = Frame(root)
+dataframe.pack(side = LEFT)
 
 fig = plt.figure(1)
 #plt.ion()
@@ -175,21 +188,39 @@ plt.ylabel('Amplitude')
 plt.xlabel('Time [us]')
 
 
-canvas = FigureCanvasTkAgg(fig, master=root)
+canvas = FigureCanvasTkAgg(fig, master=dataframe)
 plot_widget = canvas.get_tk_widget()
-plot_widget.grid(row=0, column=2)
+plot_widget.pack(side = TOP)
 
+######################
+saveframe = Frame(dataframe)
+saveframe.pack(side = BOTTOM)
 
-
-entrySave = Entry(root, width=50)
-entrySave.grid(row=15, column=2)
+labelSave = Label(saveframe, text="Path to file:")
+labelSave.pack(side=LEFT)
+entrySave = Entry(saveframe, width=50)
+entrySave.pack(side=LEFT)
 entrySave.config(state=DISABLED)
 
-savebutton = Button(mainframe, text="Save", command= lambda: save(entrySave.get()))
-savebutton.grid(column=2, row=30)  
+savebutton = Button(saveframe, text="Save", command= lambda: save(entrySave.get()))
+savebutton.pack(side=RIGHT) 
 savebutton.config(state=DISABLED)
 
+######################
+rerunframe = Frame(dataframe)
+rerunframe.pack(side = BOTTOM)
 
+labelRerun = Label(rerunframe, text="Manual offset:")
+labelRerun.pack(side=LEFT)
+entryRerun = Entry(rerunframe, width=50)
+entryRerun.pack(side=LEFT)
+entryRerun.config(state=DISABLED)
+
+rerunbutton = Button(rerunframe, text="Rerun with offset", command= lambda: rerun(entryRerun.get()))
+rerunbutton.pack(side=RIGHT)
+rerunbutton.config(state=DISABLED)
+
+#######################
 root.bind('<Left>', left)
 root.bind('<Right>', right)
 

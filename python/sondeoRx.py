@@ -37,7 +37,7 @@ from threading import Timer
 
 class top_block(gr.top_block, Qt.QWidget):
 
-    def __init__(self,sr):
+    def __init__(self,sr,bw):
         gr.top_block.__init__(self, "Top Block")
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Top Block")
@@ -70,7 +70,7 @@ class top_block(gr.top_block, Qt.QWidget):
         ##################################################
         self.samp_rate = samp_rate = sr
         self.freq = freq = 2400e6
-        self.bandwidth = bandwidth = 1.5e6
+        self.bandwidth = bandwidth = bw
 
         ##################################################
         # Blocks
@@ -153,14 +153,14 @@ class top_block(gr.top_block, Qt.QWidget):
         self.osmosdr_source_1.set_bandwidth(self.bandwidth, 0)
 
 
-def sondeoRx(sr,top_block_cls=top_block, options=None):
+def sondeoRx(sr,bw,top_block_cls=top_block, options=None):
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
         style = gr.prefs().get_string('qtgui', 'style', 'raster')
         Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
 
-    tb = top_block_cls(sr)
+    tb = top_block_cls(sr,bw)
     tb.start()
     tb.show()
     start=time.time()

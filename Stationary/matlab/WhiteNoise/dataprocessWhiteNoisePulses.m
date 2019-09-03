@@ -10,7 +10,7 @@ format long
 Fs=20e6; %Sample freq
 R=0.99; % ratio, the same as in generator script
 calibrationOffsetTime = 1;% calibration time [s] , corresponds to parameters of signal generation
-offman=30;
+offman=-5;
 wd=10; % window duration [us] for the correlation purpose
 
 

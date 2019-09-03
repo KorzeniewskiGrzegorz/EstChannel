@@ -21,6 +21,8 @@ Ryx = None
 path = "mediciones/"
 count = 0
 shiftedRyx = None
+offman = 30
+bw = 1.5e6
 ####################################################################
 
 class StdRedirector(object):
@@ -30,7 +32,7 @@ class StdRedirector(object):
     def write(self, string):
         self.text_space.config(state=NORMAL)
         self.text_space.insert("end", string)
-        #self.text_space.see("end")
+        self.text_space.see("end")
         self.text_space.config(state=DISABLED)
 
 class Shifted:
@@ -60,12 +62,14 @@ def _destroyWindow():
 def work():
 	global Ryx,shiftedRyx
 	executebutton.config(state=DISABLED)
+	rerunbutton.config(state=DISABLED)
+	entryOffman.config(state=DISABLED) 
 	plt.clf()
 	plt.ylabel('Amplitude')
 	plt.xlabel('Time [us]')
 	fig.canvas.draw()
 
-	Ryx = sounding_client(Fs)
+	Ryx = sounding_client(Fs,bw,offman=offman)
 	if Ryx is not None:
 		print "\n"*5
 		print '>'*80 
@@ -77,6 +81,29 @@ def work():
 		print("Try again")
 
 	executebutton.config(state=NORMAL)
+	rerunbutton.config(state=NORMAL)
+	entryOffman.config(state=NORMAL) 
+
+def rerun():
+	global Ryx,shiftedRyx,offman
+
+	executebutton.config(state=DISABLED)
+	rerunbutton.config(state=DISABLED)
+	entryOffman.config(state=DISABLED)  
+	print("reruning data processing with offset {}".format(offman))
+	print("please wait...")
+
+	Ryx = dataProcess(Fs,offman=offman,offsetTime = 0.5,offsetThreshold = 0.004,plotMode=False)
+	shiftedRyx = Shifted(Ryx)
+	updatePlot()
+	print("Done")
+	print '>'*80 
+	print '>'*80 
+
+	rerunbutton.config(state=NORMAL)
+	entryOffman.config(state=NORMAL)
+	executebutton.config(state=NORMAL)
+
 
 
 def start():
@@ -86,6 +113,12 @@ def start():
 	#Ryx = np.fromfile(path+'m1.dat','double')
 	#work()
 	
+def rr():
+
+	thread = threading.Thread(target=rerun)
+	thread.start()
+
+
 def searchFileIter(pathDir):
 	number =None
 	for i in range(1,1000):
@@ -120,7 +153,7 @@ def updatePlot():
 	updateEntry()
 	savebutton.config(state=NORMAL)
 	rerunbutton.config(state=NORMAL)
-	entryRerun.config(state=NORMAL)
+	entryOffman.config(state=NORMAL)
 
 
 def save(p):
@@ -129,16 +162,7 @@ def save(p):
 	print ("Impulse response saved in "+p)
 	updateEntry()
 
-def rerun(p):
-	global Ryx,shiftedRyx
-	print("reruning data processing with offset{}".format(p))
 
-	Ryx = dataProcess(Fs,offman=int(p),offsetTime = 0.5,offsetThreshold = 0.004,plotMode=False)
-	shiftedRyx = Shifted(Ryx)
-	updatePlot()
-	print("Done")
-	print '>'*80 
-	print '>'*80 
 
 
 def updateShift(direction):
@@ -153,29 +177,74 @@ def left(event):
 def right(event):
 	updateShift(1)
 	
-	
+def setOffman(p):
+	global offman
+	offman = int(p)	
+
+def setBw(p):
+	global bw
+	bw = int(p*1e6)	
+
 
 
 	
 
 ########
-w, h = 300, 200
 root = Tk()
-root.title("siema")
+root.title("Sounding Client")
 root.protocol('WM_DELETE_WINDOW', _destroyWindow)
-root.geometry("1500x800")
+root.geometry("1350x600")
 
 mainframe = Frame(root)
 mainframe.pack(side = LEFT)
 
-
-executebutton = Button(mainframe, text="Run", command=start)
-executebutton.pack(side = BOTTOM)              
-
+######################
 
 text_box = Text(mainframe)
 text_box.pack()
 sys.stdout = StdRedirector(text_box)
+
+offframe = Frame(mainframe)
+offframe.pack(side = BOTTOM)
+
+labelOffset = Label(offframe, text="Manual offset [samples]:")
+labelOffset.pack(side=LEFT)
+
+bwFrame = Frame(mainframe)
+bwFrame.pack(side = BOTTOM)
+labelBw = Label(bwFrame, text="Bandwidth [MHz]:")
+labelBw.pack(side=LEFT)
+
+ 
+
+varBw =  IntVar(value=offman)  # initial value
+
+try:
+	varBw.trace("w", lambda name, index, mode, var=varBw: setBw(varBw.get()))
+except ValueError as err:
+	pass
+
+entryBw =  Spinbox(bwFrame, from_=-100, to=100, textvariable=varBw )
+entryBw.pack(side=LEFT)
+entryBw.config(state=NORMAL)
+
+var =  IntVar(value=offman)  # initial value
+
+try:
+	var.trace("w", lambda name, index, mode, var=var: setOffman(var.get()))
+except ValueError as err:
+	pass
+
+entryOffman = Spinbox(offframe, from_=-100, to=100, textvariable=var )
+entryOffman.pack(side=LEFT)
+entryOffman.config(state=NORMAL)
+
+rerunbutton = Button(mainframe, text="Rerun data process", command= rr)
+rerunbutton.pack(side=BOTTOM)
+rerunbutton.config(state=DISABLED)  
+
+executebutton = Button(mainframe, text="Run", command=start)
+executebutton.pack(side = BOTTOM) 
 
 ###########
 
@@ -206,19 +275,8 @@ savebutton = Button(saveframe, text="Save", command= lambda: save(entrySave.get(
 savebutton.pack(side=RIGHT) 
 savebutton.config(state=DISABLED)
 
-######################
-rerunframe = Frame(dataframe)
-rerunframe.pack(side = BOTTOM)
 
-labelRerun = Label(rerunframe, text="Manual offset:")
-labelRerun.pack(side=LEFT)
-entryRerun = Entry(rerunframe, width=50)
-entryRerun.pack(side=LEFT)
-entryRerun.config(state=DISABLED)
 
-rerunbutton = Button(rerunframe, text="Rerun with offset", command= lambda: rerun(entryRerun.get()))
-rerunbutton.pack(side=RIGHT)
-rerunbutton.config(state=DISABLED)
 
 #######################
 root.bind('<Left>', left)

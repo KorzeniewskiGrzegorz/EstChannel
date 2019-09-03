@@ -12,6 +12,8 @@ from sondeoRx import *
 from scipy.ndimage.interpolation import shift
 
 def sounding_client(Fs,
+					bw=1.5e6,
+					offman =0,
 					plotMode=False,
 					path = '/dev/shm/',
 					wd = 10,
@@ -47,7 +49,7 @@ def sounding_client(Fs,
 	conn.send(message.encode())  # send message
 	shut = False
 
-	sondeoRx(Fs)
+	sondeoRx(Fs,bw)
 
 	while message.lower().strip() != 'zamknij' and not shut:
 	        # receive data stream. it won't accept data packet greater than 1024 bytes
@@ -68,7 +70,7 @@ def sounding_client(Fs,
 
 	
 	try:
-		Ryx = dataProcess(Fs,offman=0,wd=wd,path=path,offsetTime = 0.5,offsetThreshold = 0.004,plotMode=plotMode)
+		Ryx = dataProcess(Fs,offman=offman,wd=wd,path=path,offsetTime = 0.5,offsetThreshold = 0.0035,plotMode=plotMode)
 		return Ryx
 	except ValueError as err:
 		print "Exception in user code:"

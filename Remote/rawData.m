@@ -7,7 +7,7 @@ format long
 %%%%%%%%%%%%%%%%%%%%%%%
 
 
-Fs=10e6; %Sample freq
+Fs=20e6; %Sample freq
 
 path="/dev/shm/";
 

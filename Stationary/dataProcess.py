@@ -30,8 +30,7 @@ def dataProcess(Fs , #Sample freq
 
 
 
-	offset = offcalc(dataC.real,Fs,0.003,0.05)
-
+	
 	#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	#Calibration processing
 
@@ -43,7 +42,8 @@ def dataProcess(Fs , #Sample freq
 
 
 	# signal calibration
-	offset =(-1) *(offcalc(dataC.real,Fs,0.003,0.1))-offman  #received samples offset due to hardware & software lag [samples];
+	offset =(-1) *(offcalc(np.abs(dataC),Fs,offsetThreshold,offsetTime,calibrationOffsetTime))-offman
+	 #received samples offset due to hardware & software lag [samples];
 
 	ruidoC = ruidoC[ int(calibrationOffset)    :    int(calibrationOffset*2-(Fs/F)*(1-R)) ];
 	#print(ruidoC[int(calibrationOffset)])
@@ -81,15 +81,18 @@ def dataProcess(Fs , #Sample freq
 
 	Ryx = PA.mean(axis=0)
 
-	plt.plot(np.abs(Ryx))
+	Ryx = np.abs(Ryx)
+	plt.plot(Ryx)
 	plt.show()
+
+	Ryx.tofile("s.dat")
 
 
 def main():
 	Fs = 20e6 #Sample freq
 	R = 0.99; # ratio, the same as in generator script
 	calibrationOffsetTime = 1# calibration time [s] , corresponds to parameters of signal generation
-	offman = 30;
+	offman = 15;
 	wd = 10; # window duration [us] for the correlation purpose
 	path = "/dev/shm/"
 

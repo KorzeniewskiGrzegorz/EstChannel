@@ -10,8 +10,8 @@ format long
 Fs=20e6; %Sample freq
 R=0.99; % ratio, the same as in generator script
 signalDuration = 1;% calibration time [s] , corresponds to parameters of signal generation
-offman=0;
-wd=10; % window duration [us] for the correlation purpose
+offman=45;
+wd=100; % window duration [us] for the correlation purpose
 
 
 connectionType="cable";
@@ -77,7 +77,7 @@ calibrationOffset = signalDuration *Fs ; % conversion from time to samples
 
 
 % signal calibration
-offset =(-1) *(offsetcalc(abs(dataC),Fs,0.004,0.5))-offman ; % received samples offset due to hardware & software lag [samples] -117106;
+offset =(-1) *(offsetcalc(abs(dataC),Fs,0.0035,0.5))-offman ; % received samples offset due to hardware & software lag [samples] -117106;
 
 
 dataC=dataC(calibrationOffset+offset+1:calibrationOffset*2+offset-(Fs/F)*(1-R)+2);

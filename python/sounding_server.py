@@ -10,7 +10,6 @@ from sondeoTx import *
 
 def server_work(s,Fs,name):
 
-
 	while True:
 		
 		print("waiting for connection ...")
@@ -30,11 +29,23 @@ def server_work(s,Fs,name):
 
 			data = conn.recv(1024).decode()  # receive response
 
-			if data == "start":
-				
+			if "start" in data:
+
+				#print data
+				strs = data.split(";")[1]
+				#print strs
+
+				parms = strs.split(",")
+				#print parms
+				Fs = float(parms[0].split(":")[1])
+				bw = float(parms[1].split(":")[1])
+
+				#print Fs
+				#print bw
+
 				result_available = threading.Event()
 
-				thread = threading.Thread(target=sondeoTx, args=(Fs,result_available,))
+				thread = threading.Thread(target=sondeoTx, args=(Fs,bw,result_available,))
 				thread.start()
 
 	        	result_available.wait()
@@ -71,7 +82,7 @@ def sounding_server():
 
 	HOST ='192.168.10.3'              # Symbolic name meaning all available interfaces
 	#HOST = '127.0.0.1'   
-	PORT = 50007             # Arbitrary non-privileged port
+	PORT = 50006             # Arbitrary non-privileged port
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	s.bind((HOST, PORT))
 	s.listen(1)

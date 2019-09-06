@@ -19,14 +19,14 @@ import threading
 
 class top_block(gr.top_block):
 
-    def __init__(self,sr):
+    def __init__(self,sr,bw):
         gr.top_block.__init__(self, "Top Block")
         ##################################################
         # Variables
         ##################################################
         self.samp_rate = samp_rate = sr
         self.freq = freq = 2400e6
-        self.bandwidth = bandwidth = 1.5e6
+        self.bandwidth = bandwidth = bw
 
         ##################################################
         # Blocks
@@ -83,9 +83,9 @@ class top_block(gr.top_block):
         self.osmosdr_sink_0.set_bandwidth(self.bandwidth, 0)
 
 
-def sondeoTx(sr,e,top_block_cls=top_block, options=None):
+def sondeoTx(sr,bw,e,top_block_cls=top_block, options=None):
 
-    tb = top_block_cls(sr)
+    tb = top_block_cls(sr,bw)
     tb.start()
    
     start=time.time()

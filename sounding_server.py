@@ -3,12 +3,12 @@ import socket
 
 import os
 import sys
-sys.path.insert(1, '/home/udg/git/EstChannel/modules')
+sys.path.insert(1, '/home/grzechu/git/EstChannel/modules')
 import threading
 from blader_Tx import blader_Tx
 
 
-def server_work(s,Fs =20e6,name):
+def server_work(s,name,Fs =20e6):
 
 	while True:
 		
@@ -80,7 +80,7 @@ def sounding_server():
 	s.listen(1)
 
 	try:
-		server_work(s,Fs,name)
+		server_work(s,name,Fs)
 	
 	except KeyboardInterrupt:
 		print("\nserver shutted down")

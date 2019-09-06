@@ -6,7 +6,7 @@ if sys.version_info[0] < 3:
 else:
 	from tkinter import *
 
-sys.path.insert(1, '/home/udg/git/EstChannel/rafagas/modules')
+sys.path.insert(1, '/home/udg/git/EstChannel/modules')
 
 import numpy as np 
 import tkMessageBox
@@ -70,7 +70,9 @@ def work():
 	entryOffman.config(state=DISABLED)
 	entryFs.config(state=DISABLED) 
 	entryBw.config(state=DISABLED) 
+	entryWd.config(state=DISABLED)
 	plt.clf()
+	plt.title('Estimated impulse response')
 	plt.ylabel('Amplitude')
 	plt.xlabel('Time [us]')
 	fig.canvas.draw()
@@ -88,7 +90,10 @@ def work():
 
 	executebutton.config(state=NORMAL)
 	rerunbutton.config(state=NORMAL)
-	entryOffman.config(state=NORMAL) 
+	entryOffman.config(state=NORMAL)
+	entryFs.config(state=NORMAL)
+	entryBw.config(state=NORMAL)
+	entryWd.config(state=NORMAL)
 
 def rerun():
 	global Ryx,shiftedRyx,offman
@@ -98,6 +103,7 @@ def rerun():
 	entryOffman.config(state=DISABLED)
 	entryFs.config(state=DISABLED) 
 	entryBw.config(state=DISABLED) 
+	entryWd.config(state=DISABLED)
 	print("reruning data processing with offset {}".format(offman))
 	print("please wait...")
 
@@ -113,7 +119,7 @@ def rerun():
 	entryOffman.config(state=NORMAL)
 	entryFs.config(state=NORMAL)
 	entryBw.config(state=NORMAL)
-
+	entryWd.config(state=NORMAL)
 
 
 
@@ -153,11 +159,11 @@ def updatePlot():
 	global Ryx
 
 	l = len(Ryx)
-	
-	range_b = int(wd*1e-6)
-	t=np.arange(0,range_b,1/Fs)*1e6/Fs
+	range_b = l/Fs - 1/Fs
+	t=np.arange(0,range_b,1/Fs)*1e6
 	plt.clf()
-	plt.plot(Ryx)
+	plt.plot(t,Ryx)
+	plt.title('Estimated impulse response')
 	plt.ylabel('Amplitude')
 	plt.xlabel('Time [us]')
 	fig.canvas.draw()
@@ -168,6 +174,7 @@ def updatePlot():
 	entryOffman.config(state=NORMAL)
 	entryFs.config(state=NORMAL)
 	entryBw.config(state=NORMAL)
+	entryWd.config(state=NORMAL)
 
 def save(p):
 	global Ryx

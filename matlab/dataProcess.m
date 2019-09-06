@@ -19,28 +19,30 @@ ruidoR=fread(fid,'float');
 fid=fopen(path+"ruidoI.dat",'rb');
 ruidoI=fread(fid,'float');
 
+ruidoR = ruidoR(1:1.5*Fs);
+ruidoI = ruidoI(1:1.5*Fs);
 ruidoC=complex(ruidoR,ruidoI);  %transmitted complex data
 
 clear ruidoR
 clear ruidoI
 
-lenRRaw=size(ruidoC(:,1));
-lenRRaw=lenRRaw(1,1);
-
+lenRRaw=length(ruidoC(:,1));
 
 fid=fopen(path+"dataR.dat",'rb');
 dataR=fread(fid,'float');
+dataR = dataR(1:1.5*Fs);
 
 fid=fopen(path+"dataI.dat",'rb');
 dataI=fread(fid,'float');
 
+dataR = dataR(1:1.5*Fs);
+dataI = dataI(1:1.5*Fs);
 dataC=complex(dataR,dataI); % received complex data
 
 clear dataR
 clear dataI
 
-lenDRaw=size(dataC(:,1));
-lenDRaw=lenDRaw(1,1);
+lenDRaw=length(dataC(:,1));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Calibration processing
@@ -60,6 +62,8 @@ dataR=fread(fid,'float');
 fid=fopen(path+"fdataI.dat",'rb');
 dataI=fread(fid,'float');
 
+dataR = dataR(1:1.5*Fs);
+dataI = dataI(1:1.5*Fs);
 dataC=complex(dataR,dataI); % filtered rx complex data
 
 dataC  = dataC (offset+1:offset +Fs);

@@ -32,11 +32,13 @@ def routine_stat(Fs,
 	thread.start()
 	print("transmitting...")
 	result_available.wait()
-	print("done")
+
 
 	dcFilter()
 
-	print("\n\n\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+	print("\n")
+	print "%"*40
+	print("\n")
 	print("processing data ...")
 
 	

@@ -126,7 +126,8 @@ def sounding(sr,bw,e,top_block_cls=top_block, options=None):
 
     def finish(e):
         end = time.time()
-        print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+        print("\n")
+        print "%"*40
         print("transmission time: \t"+str(end-start)+"s")
         print("\tsamp rate: \t"+str(tb.samp_rate)+" samples/s")
         print("\tcarr freq: \t"+str(tb.freq)+"Hz")
@@ -136,7 +137,7 @@ def sounding(sr,bw,e,top_block_cls=top_block, options=None):
         e.set()
         
 
-    t = Timer(3, finish, [e])
+    t = Timer(2, finish, [e])
     t.start() # after 30 seconds, "hello, world" will be printed     
 
 if __name__ == '__main__':
@@ -151,4 +152,4 @@ if __name__ == '__main__':
     thread.start()
     print("transmitting...")
     result_available.wait()
-    print("done")
+    

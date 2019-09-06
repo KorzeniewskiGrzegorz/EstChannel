@@ -1,0 +1,68 @@
+# RX, where the data is generated and processed
+
+import os
+import sys
+import traceback
+
+import threading
+from whiteNoiseGen import whiteNoiseGen
+from dataProcess import dataProcess
+from sounding import sounding
+from dcFilter import dcFilter 
+from scipy.ndimage.interpolation import shift
+
+def routine_stat(Fs,
+			bw=1.5e6,
+			offman =0,
+			plotMode=False,
+			path = '/dev/shm/',
+			wd = 100,
+			):
+
+
+	print '<'*80 
+	print '<'*80 
+	print "INIT"
+	whiteNoiseGen(Fs)
+
+	######################
+
+	result_available = threading.Event()
+	thread = threading.Thread(target=sounding, args=(Fs,bw,result_available,))
+	thread.start()
+	print("transmitting...")
+	result_available.wait()
+	print("done")
+
+	dcFilter()
+
+	print("\n\n\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+	print("processing data ...")
+
+	
+	try:
+		Ryx = dataProcess(Fs,wd,path,plotMode)
+		return Ryx
+	except ValueError as err:
+		print "Exception in user code:"
+        print '-'*60
+        traceback.print_exc(file=sys.stdout)
+        print '-'*60
+        return None
+			
+
+def main():
+
+
+		Fs = 20e6
+		Ryx = None
+		print("transmitting...")
+		Ryx = routine_stat(Fs,plotMode=True)
+
+		print("done")
+		print(Ryx)
+	
+
+
+if __name__ == '__main__':
+    main()

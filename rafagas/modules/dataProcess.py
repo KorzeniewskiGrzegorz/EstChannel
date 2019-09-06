@@ -8,14 +8,10 @@ from offcalc import offcalc
 
 #%%%%%%%%%5%%%%%%%%%%%%%
 def dataProcess(Fs , #Sample freq
-	R = 0.99, # ratio, the same as in generator script
-	calibrationOffsetTime = 1,# calibration time [s] , corresponds to parameters of signal generation
-	offman = 0,
-	wd = 10,
+	wd = 100,
 	path = "/dev/shm/",
-	offsetThreshold = 0.003,
-	offsetTime = 0.1,
-	plotMode=True):
+	offman = 0,
+	plotMode=False):
 	ruidoR = np.fromfile(path + "ruidoR.dat",'float32')
 	ruidoI = np.fromfile(path + "ruidoI.dat",'float32')
 	ruidoC = ruidoR + 1j * ruidoI
@@ -36,26 +32,21 @@ def dataProcess(Fs , #Sample freq
 	#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	#Calibration processing
 
-
-	F = 1/calibrationOffsetTime
-	calibrationOffset = calibrationOffsetTime * Fs  #conversion from time to samples
-
-
-
+	calibrationOffset = 0.2 *Fs  #conversion from time to samples
 
 	# signal calibration
-	offset =(-1) *(offcalc(np.abs(dataC),Fs,offsetThreshold,offsetTime,calibrationOffsetTime))-offman  #received samples offset due to hardware & software lag [samples];
+	offset = offcalc(dataC,Fs) + offman #received samples offset due to hardware & software lag [samples];
 
-	ruidoC = ruidoC[ int(calibrationOffset)    :    int(calibrationOffset*2-(Fs/F)*(1-R)) ];
-	#print(ruidoC[int(calibrationOffset)])
-	#print(ruidoC[int(calibrationOffset)-1])
-	#print(ruidoC[int(calibrationOffset*2-(Fs/F)*(1-R))])
-	#print(ruidoC[int(calibrationOffset*2-(Fs/F)*(1-R))-1])
 
-	dataC = dataC[int(calibrationOffset+offset)    :    int(calibrationOffset*2-(Fs/F)*(1-R) +offset)  ];
+	dataR = np.fromfile(path + "fdataR.dat",'float32')
+	dataI = np.fromfile(path + "fdataI.dat",'float32')
 
-	#plt.plot(dataC.real)
-	#plt.show()
+	dataC = dataR + 1j * dataI
+	del dataR,dataI
+
+	ruidoC = ruidoC[ int(calibrationOffset) : int(calibrationOffset*Fs) ];
+	dataC  = dataC [ offset : int(offset+Fs)  ];
+
 
 	lenR=len(ruidoC)
 	lenD=len(dataC)
@@ -92,13 +83,10 @@ def dataProcess(Fs , #Sample freq
 
 def main():
 	Fs = 20e6 #Sample freq
-	R = 0.99; # ratio, the same as in generator script
-	calibrationOffsetTime = 1# calibration time [s] , corresponds to parameters of signal generation
-	offman = 0;
 	wd = 100; # window duration [us] for the correlation purpose
 	path = "/dev/shm/"
 
-	dataProcess(Fs,R,calibrationOffsetTime,offman,wd,path,offsetTime = 0.5,offsetThreshold = 0.002)
+	dataProcess(Fs,wd,path)
 
 
 if __name__ == '__main__':

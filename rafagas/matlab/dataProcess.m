@@ -8,18 +8,9 @@ format long
 
 
 Fs=20e6; %Sample freq
-R=0.99; % ratio, the same as in generator script
-signalDuration = 1;% calibration time [s] , corresponds to parameters of signal generation
-offman=45;
 wd=100; % window duration [us] for the correlation purpose
-
-
-connectionType="cable";
-savePath="/home/udg/Dropbox/UDG/magisterka/pomiary/";
-
-%path="/tmp/";
 path="/dev/shm/";
-%path="/home/udg/Escritorio/datos/";
+
 
 %%%%%%%%%5%%%%%%%%%%%%%
 fid=fopen(path+"ruidoR.dat",'rb');
@@ -42,53 +33,40 @@ dataR=fread(fid,'float');
 
 fid=fopen(path+"dataI.dat",'rb');
 dataI=fread(fid,'float');
-%lenDIRaw=size(dataI(:,1));
-%lenDIRaw=lenDIRaw(1,1);
 
-%dataR=dataR(1:lenDIRaw);
 dataC=complex(dataR,dataI); % received complex data
-%probka=dataR;
+
 clear dataR
 clear dataI
 
 lenDRaw=size(dataC(:,1));
 lenDRaw=lenDRaw(1,1);
 
-
-
-%Raw data plotting
-
-%figure
-%subplot(2,1,1)
-%plot(0:1/Fs:2.5-1/Fs,real(ruidoC(1:2.5*Fs)),0:1/Fs:2.5-1/Fs,imag(ruidoC(1:2.5*Fs)))
-%title('Tx Raw Data')
-%xlabel('time [s]')
-%subplot(2,1,2)
-%plot(0:1/Fs:2.5-1/Fs,real(dataC(1:2.5*Fs)),0:1/Fs:2.5-1/Fs,imag(dataC(1:2.5*Fs)))
-%title('Rx Raw Data')
-%xlabel('time [s]')
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Calibration processing
 
 
-F=1/signalDuration ; 
-calibrationOffset = signalDuration *Fs ; % conversion from time to samples
+
+calibrationOffset = 0.2 *Fs ; % conversion from time to samples
 
 
 % signal calibration
-offset = 45370%;(-1) *(offsetcalc(abs(dataC),Fs,0.0035,0.5))-offman ; % received samples offset due to hardware & software lag [samples] -117106;
+offset = offsetcalc(dataC,Fs); % received samples offset due to hardware & software lag [samples]
 
 
-dataC=dataC(calibrationOffset+offset+1:calibrationOffset*2+offset-(Fs/F)*(1-R)+2);
-ruidoC=ruidoC(calibrationOffset:calibrationOffset*2 -(Fs/F)*(1-R)+1);
+fid=fopen(path+"fdataR.dat",'rb');
+dataR=fread(fid,'float');
 
-lenR=size(ruidoC(:,1));
-lenR=lenR(1,1);
+fid=fopen(path+"fdataI.dat",'rb');
+dataI=fread(fid,'float');
 
-lenD=size(dataC(:,1));
-lenD=lenD(1,1);
+dataC=complex(dataR,dataI); % filtered rx complex data
 
+dataC  = dataC (offset+1:offset +Fs);
+ruidoC = ruidoC(calibrationOffset+1:calibrationOffset+Fs);
+
+lenR=length(ruidoC(:,1));
+lenD=length(dataC(:,1));
 
 %calibrated data plotting
 
@@ -109,7 +87,7 @@ v=floor(lenD/N); % number of pulses recorded
 
 y=zeros(N,v);
 
-for i=0: v-1% Run cross correlation for v times
+for i=0:v-1 % Run cross correlation for v times
     
 
     x=ruidoC(i*N+1:i*N+N,1); % TX
@@ -117,9 +95,11 @@ for i=0: v-1% Run cross correlation for v times
     
     rxy=xcorr(x,conj(y)); % Cross correlation of the TX and RX conjugated data
     Ryx=flip(rxy(1:N)); % Flip the correlation result and take the first N samples (Ryx(t) = Rxy(-t)
-    
-    
-
+    %hold on
+    %figure
+    %plot(x)
+    %plot(abs(y))
+    %hold off
 PA(:,i+1)=Ryx'; %Store the results in an array
 end
 clear Ryx; 
@@ -130,6 +110,7 @@ Ryx=sum(PA')/v; % Average the values
 
 figure;
 plot(0:1/Fs*1000000:N/Fs*1000000-1/Fs*1000000,abs(Ryx)); % Plot the estimated impulse response
+
 title('Estimated Impulse Response');
 xlabel('time [us]')
 grid;

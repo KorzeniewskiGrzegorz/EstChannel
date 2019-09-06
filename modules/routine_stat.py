@@ -38,7 +38,7 @@ def routine_stat(Fs,
 
 	print("\n")
 	print "%"*40
-	print("\n")
+
 	print("processing data ...")
 
 	

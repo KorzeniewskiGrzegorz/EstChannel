@@ -25,6 +25,8 @@ dataR=fread(fid,'float');
 fid=fopen(path+"dataI.dat",'rb');
 dataI=fread(fid,'float');
 
+dataR = dataR(1:2*Fs);
+dataI = dataI(1:2*Fs);
 
 
 lenRRaw=length(ruidoR(:,1));

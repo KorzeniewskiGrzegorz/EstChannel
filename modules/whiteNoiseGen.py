@@ -20,9 +20,9 @@ def whiteNoiseGen(Fs,R =0.01,duration = 1,wd =0.0001, path ='/dev/shm/'):
 		w[0:int(Fs*wd- Fs*wd*(1-R))] = np.random.randn(1,int(Fs*wd - Fs*wd*(1-R)))
 		IData[i*N:(i+1)*N] = w
 
-	syncPulseLen = 0.2 # [s]
+	syncPulseLen = 0.6 # [s]
 
-	ISync = syncpulse(Fs,0.5,syncPulseLen,0.1)
+	ISync = syncpulse(Fs,syncPulseLen,)
 
 	IData = np.append (ISync, IData)
 
@@ -31,7 +31,7 @@ def whiteNoiseGen(Fs,R =0.01,duration = 1,wd =0.0001, path ='/dev/shm/'):
 
 	QData = np.zeros(data_len)
 
-	#t=np.linspace(0, duration+0.2, num=data_len)
+	#t=np.linspace(0, duration+syncPulseLen, num=data_len)
 
 	#plt.plot(t,IData,'b',t,QData,'r')
 	#plt.show()

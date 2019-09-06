@@ -32,7 +32,7 @@ def dataProcess(Fs , #Sample freq
 	#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	#Calibration processing
 
-	calibrationOffset = 0.2 *Fs  #conversion from time to samples
+	calibrationOffset = 0.6 *Fs  #conversion from time to samples
 
 	# signal calibration
 	offset = offcalc(dataC,Fs) + offman #received samples offset due to hardware & software lag [samples];

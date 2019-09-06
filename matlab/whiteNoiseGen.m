@@ -27,7 +27,7 @@ for i=1: v
 end
 
 
-ISync = syncpulse(Fs,0.5,0.2,0.1);
+ISync = syncpulse(Fs,0.6);
 
 IData = [ISync, IData];
 

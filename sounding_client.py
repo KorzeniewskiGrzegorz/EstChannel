@@ -16,7 +16,7 @@ matplotlib.use('TkAgg')
 import matplotlib.backends.backend_tkagg as tkagg
 import matplotlib.pyplot as plt
 
-from routine_stat import * 
+from routine_remote import * 
 
 ############ GLOBAL ################################################
 Fs = 20e6
@@ -77,7 +77,7 @@ def work():
 	plt.xlabel('Time [us]')
 	fig.canvas.draw()
 
-	Ryx = routine_stat(Fs,bw,wd=wd,offman=offman)
+	Ryx = routine_remote(Fs,bw,wd=wd,offman=offman)
 	if Ryx is not None:
 		print "\n"*5
 		print '>'*80 
@@ -216,7 +216,7 @@ def setWd(p):
 
 ########
 root = Tk()
-root.title("Stationary sounding")
+root.title("Remote sounding")
 root.protocol('WM_DELETE_WINDOW', _destroyWindow)
 root.geometry("1350x600")
 
@@ -269,14 +269,14 @@ labelBw = Label(lblFrame, text="Bandwidth [MHz]:")
 labelBw.pack(side=TOP)
 
 
-varBw =  DoubleVar(value=20)  # initial value
+varBw =  DoubleVar(value=1.5)  # initial value
 
 try:
 	varBw.trace("w", lambda name, index, mode, var=varBw: setBw(varBw.get()))
 except ValueError as err:
 	pass
 
-entryBw =  Spinbox(etrFrame, from_=1, to=20, textvariable=varBw )
+entryBw =  Spinbox(etrFrame, from_=1, to=20,increment = 0.5, textvariable=varBw )
 entryBw.pack(side=TOP)
 entryBw.config(state=NORMAL)
 ############
@@ -301,7 +301,7 @@ entryOffman.config(state=NORMAL)
 labelwd = Label(lblFrame, text="Window duration [us]:")
 labelwd.pack(side=TOP)
 
-varWd =  IntVar(value=10)  # initial value
+varWd =  IntVar(value=100)  # initial value
 
 try:
 	varWd.trace("w", lambda name, index, mode, var=varWd: setWd(varWd.get()))

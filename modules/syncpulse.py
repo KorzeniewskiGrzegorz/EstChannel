@@ -3,20 +3,16 @@ import sys
 import numpy as np 
 import matplotlib.pyplot as plt
 
-def  syncpulse(Fs,R,duration,wd):
+def  syncpulse(Fs,duration):
 
-	ISync = np.zeros(int(Fs*duration))
+	R = 0.5
+	wd = duration - 0.1
 
+	ISync = np.zeros(int(Fs*wd))
 
-	v = int(duration/wd)
-	N = int(Fs*wd) 
+	ISync[int(Fs*wd*(1-R)):] = 5
 
-
-	w = np.zeros(int(Fs*wd))
-	w[0:int(Fs*wd- Fs*wd*(1-R))] = 5
-
-	i = 1
-	ISync[i*N:(i+1)*N] = w 
+	ISync = np.append (ISync, np.zeros(int(Fs*0.1)+1))
 
 	return ISync
 
@@ -24,12 +20,11 @@ def  syncpulse(Fs,R,duration,wd):
 def main():
 	
 	Fs = 20e6  # sample freq [Hz]
-	R = 0.5 # pulse ratio (0-1 range) for signal break
-	duration = 0.2 # signal duration [s]
-	wd = 0.1
+	duration = 0.6 # signal duration [s]
 
 
-	sync = syncpulse(Fs,R,duration,wd)
+
+	sync = syncpulse(Fs,duration,)
 
 
 if __name__ == '__main__':

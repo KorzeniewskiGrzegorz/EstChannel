@@ -2,12 +2,14 @@
 import socket
 import paramiko
 import os
+import sys
 import traceback
 
 import threading
 from whiteNoiseGen import whiteNoiseGen
 from dataProcess import dataProcess
 from blader_Rx import *
+from dcFilter import dcFilter 
 from scipy.ndimage.interpolation import shift
 
 def routine_remote(Fs,
@@ -49,7 +51,11 @@ def routine_remote(Fs,
 	shut = False
 
 
-	blader_Rx(Fs,bw)
+	result_available = threading.Event()
+	thread = threading.Thread(target=blader_Rx, args=(Fs,bw,result_available,))
+	thread.start()
+	print("transmitting...")
+	result_available.wait()
 
 	while message.lower().strip() != 'zamknij' and not shut:
 	        # receive data stream. it won't accept data packet greater than 1024 bytes

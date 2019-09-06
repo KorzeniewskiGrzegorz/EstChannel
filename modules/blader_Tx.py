@@ -35,7 +35,7 @@ class top_block(gr.top_block):
         self.osmosdr_sink_0.set_sample_rate(samp_rate)
         self.osmosdr_sink_0.set_center_freq(freq, 0)
         self.osmosdr_sink_0.set_freq_corr(0, 0)
-        self.osmosdr_sink_0.set_gain(10, 0)
+        self.osmosdr_sink_0.set_gain(25, 0)
         self.osmosdr_sink_0.set_if_gain(0, 0)
         self.osmosdr_sink_0.set_bb_gain(0, 0)
         self.osmosdr_sink_0.set_antenna('TX', 0)

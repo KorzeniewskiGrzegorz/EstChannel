@@ -7,7 +7,7 @@ import traceback
 import threading
 from whiteNoiseGen import whiteNoiseGen
 from dataProcess import dataProcess
-from sounding import sounding
+from blader_stat import blader_stat
 from dcFilter import dcFilter 
 from scipy.ndimage.interpolation import shift
 
@@ -28,7 +28,7 @@ def routine_stat(Fs,
 	######################
 
 	result_available = threading.Event()
-	thread = threading.Thread(target=sounding, args=(Fs,bw,result_available,))
+	thread = threading.Thread(target=blader_stat, args=(Fs,bw,result_available,))
 	thread.start()
 	print("transmitting...")
 	result_available.wait()

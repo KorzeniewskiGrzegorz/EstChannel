@@ -83,7 +83,7 @@ class top_block(gr.top_block):
         self.osmosdr_sink_0.set_bandwidth(self.bandwidth, 0)
 
 
-def sondeoTx(sr,bw,e,top_block_cls=top_block, options=None):
+def blader_Tx(sr,bw,e,top_block_cls=top_block, options=None):
 
     tb = top_block_cls(sr,bw)
     tb.start()
@@ -92,7 +92,8 @@ def sondeoTx(sr,bw,e,top_block_cls=top_block, options=None):
 
     def finish(e):
         end = time.time()
-        print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+        print("\n")
+        print "%"*40
         print("transmission time: \t"+str(end-start)+"s")
         print("\tsamp rate: \t"+str(tb.samp_rate)+" samples/s")
         print("\tcarr freq: \t"+str(tb.freq)+"Hz")

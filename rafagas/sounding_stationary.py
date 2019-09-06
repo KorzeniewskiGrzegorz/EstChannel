@@ -6,14 +6,17 @@ if sys.version_info[0] < 3:
 else:
 	from tkinter import *
 
+sys.path.insert(1, '/home/udg/git/EstChannel/rafagas/modules')
+
 import numpy as np 
 import tkMessageBox
 import matplotlib
 matplotlib.use('TkAgg')
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+import matplotlib.backends.backend_tkagg as tkagg
 import matplotlib.pyplot as plt
 
-from sounding_client import * 
+from routine_stat import * 
 
 ############ GLOBAL ################################################
 Fs = 20e6
@@ -21,7 +24,7 @@ Ryx = None
 path = "mediciones/"
 count = 0
 shiftedRyx = None
-offman = 30
+offman = 0
 bw = 1.5e6
 wd = 10
 ####################################################################
@@ -72,7 +75,7 @@ def work():
 	plt.xlabel('Time [us]')
 	fig.canvas.draw()
 
-	Ryx = sounding_client(Fs,bw,wd=wd,offman=offman)
+	Ryx = routine_stat(Fs,bw,wd=wd,offman=offman)
 	if Ryx is not None:
 		print "\n"*5
 		print '>'*80 
@@ -98,7 +101,7 @@ def rerun():
 	print("reruning data processing with offset {}".format(offman))
 	print("please wait...")
 
-	Ryx = dataProcess(Fs,wd=wd,offman=offman,offsetTime = 0.5,offsetThreshold = 0.004,plotMode=False)
+	Ryx = dataProcess(Fs,wd=wd,offman=offman,plotMode=False)
 	shiftedRyx = Shifted(Ryx)
 	updatePlot()
 	print("Done")
@@ -206,7 +209,7 @@ def setWd(p):
 
 ########
 root = Tk()
-root.title("Sounding Client")
+root.title("Stationary sounding")
 root.protocol('WM_DELETE_WINDOW', _destroyWindow)
 root.geometry("1350x600")
 
@@ -317,14 +320,16 @@ dataframe = Frame(root)
 dataframe.pack(side = LEFT)
 
 fig = plt.figure(1)
-#plt.ion()
+plt.title('Estimated impulse response')
 plt.ylabel('Amplitude')
 plt.xlabel('Time [us]')
 
 
-canvas = FigureCanvasTkAgg(fig, master=dataframe)
+canvas = tkagg.FigureCanvasTkAgg(fig, master=dataframe)
 plot_widget = canvas.get_tk_widget()
 plot_widget.pack(side = TOP)
+toolbar = tkagg.NavigationToolbar2TkAgg(canvas, dataframe)
+toolbar.pack(side = TOP)
 
 ######################
 saveframe = Frame(dataframe)

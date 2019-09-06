@@ -19,9 +19,9 @@ Fs = 20e6
 range_a= int(0*Fs)
 range_b = int(10e-6*Fs)
 
-data = np.fromfile('completo.dat','double')
+data = np.fromfile('shiftedRaf0_001.dat','double')
 len_data = data.size
-t=np.arange(range_a,range_b) / Fs *1e6
+#t=np.arange(range_a,range_b) / Fs *1e6
 
 def _destroyWindow():
     app.quit()
@@ -38,7 +38,7 @@ app.protocol('WM_DELETE_WINDOW', _destroyWindow)
 #####
 fig = plt.figure(1)
 #plt.ion()
-plt.plot(t,data[range_a:range_b])
+plt.plot(data)
 
 canvas = FigureCanvasTkAgg(fig, master=app)
 plot_widget = canvas.get_tk_widget()
@@ -56,7 +56,7 @@ def update(direction):
    		newData[len_data + count:len_data] = np.zeros((-1)*count) 
 	
 	plt.clf()
-	plt.plot(t,newData)
+	plt.plot(newData)
 	fig.canvas.draw()
 
 def left(event):
@@ -71,7 +71,7 @@ app.bind('<Left>', left)
 app.bind('<Right>', right)
 
 def saveRyx():
-	newData.tofile('shiftedCompleto.dat')
+	newData.tofile('shiftedRaf0_001.dat')
 
 tk.Button(app,text="Save",command=saveRyx).grid(row=1, column=0)
 

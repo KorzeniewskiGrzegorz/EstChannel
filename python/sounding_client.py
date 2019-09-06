@@ -23,7 +23,7 @@ def sounding_client(Fs,
 
 	HOST = '192.168.10.3'         # The remote host
 	#HOST = '127.0.0.1'   
-	PORT = 50007         # The same port as used by the server
+	PORT = 50006         # The same port as used by the server
 	#ip = '192.168.10.4'
 	ip = HOST
 	name = "grzechu"
@@ -45,9 +45,10 @@ def sounding_client(Fs,
 	print("Done")
 
 	response =""
-	message = "start"  # 
+	message = "start;Fs:{0},BW:{1}".format(Fs,bw)  # 
 	conn.send(message.encode())  # send message
 	shut = False
+
 
 	sondeoRx(Fs,bw)
 

@@ -19,10 +19,10 @@ path="/dev/shm/";
 %fid=fopen(path+"ruidoI.dat",'rb');
 %dataI=fread(fid,'float');
 
-fid=fopen(path+"dataR.dat",'rb');
+fid=fopen(path+"fdataR.dat",'rb');
 dataR=fread(fid,'float');
 
-fid=fopen(path+"dataI.dat",'rb');
+fid=fopen(path+"fdataI.dat",'rb');
 dataI=fread(fid,'float');
 
 
@@ -37,7 +37,7 @@ dataC=complex(dataR,dataI);
 
 figure
 
-plot(0:1/Fs:lenDRaw/Fs-1/Fs,abs(dataC))%,0:1/Fs:lenDRaw/Fs-1/Fs,dataI)
+plot(abs(dataC))%,0:1/Fs:lenDRaw/Fs-1/Fs,dataI)
 title('Rx Raw Data')
 xlabel('time [s]')
 

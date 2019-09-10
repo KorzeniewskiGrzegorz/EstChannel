@@ -13,6 +13,7 @@ from dcFilter import dcFilter
 from scipy.ndimage.interpolation import shift
 
 def routine_remote(Fs,
+					Fr = 2.4e6,
 					bw=1.5e6,
 					offman =0,
 					plotMode=False,
@@ -24,7 +25,7 @@ def routine_remote(Fs,
 
 	HOST = '192.168.10.3'         # The remote host
 	#HOST = '127.0.0.1'   
-	PORT = 50006         # The same port as used by the server
+	PORT = 50007         # The same port as used by the server
 	#ip = '192.168.10.4'
 	ip = HOST
 	name = "grzechu"
@@ -46,13 +47,13 @@ def routine_remote(Fs,
 	print("Done")
 
 	response =""
-	message = "start;Fs:{0},BW:{1}".format(Fs,bw)  # 
+	message = "start;Fs:{0},Fr:{1},BW:{2}".format(Fs,Fr,bw)  # 
 	conn.send(message.encode())  # send message
 	shut = False
 
 
 	result_available = threading.Event()
-	thread = threading.Thread(target=blader_Rx, args=(Fs,bw,result_available,))
+	thread = threading.Thread(target=blader_Rx, args=(Fs,Fr,bw,result_available,))
 	thread.start()
 	print("transmitting...")
 	result_available.wait()
@@ -60,7 +61,7 @@ def routine_remote(Fs,
 	while message.lower().strip() != 'zamknij' and not shut:
 	        # receive data stream. it won't accept data packet greater than 1024 bytes
 		response = conn.recv(1024).decode()
-		print("from connected user: " + str(response))
+		print("                               from connected user: " + str(response))
 
 		if response == "done":
 			shut = True
@@ -71,9 +72,7 @@ def routine_remote(Fs,
 
 	dcFilter()
 
-	print("\n")
-	print "%"*40
-	print("\n")
+
 	print("processing data ...")
 
 

@@ -20,8 +20,9 @@ from routine_remote import *
 
 ############ GLOBAL ################################################
 Fs = 20e6
+Fr = 2400e6
 Ryx = None
-path = "mediciones/"
+path = "mediciones"
 count = 0
 shiftedRyx = None
 offman = 0
@@ -62,22 +63,41 @@ def _destroyWindow():
     root.quit()
     root.destroy()
 
+def enableFields():
+
+	executebutton.config(state=NORMAL)
+	rerunbutton.config(state=NORMAL)
+	entryFr.config(state=NORMAL)
+	entryFs.config(state=NORMAL)
+	entryBw.config(state=NORMAL)
+	entryWd.config(state=NORMAL)
+
+	savebutton.config(state=NORMAL)
+	folderButton.config(state=NORMAL)
+
+def disableFields():
+	executebutton.config(state=DISABLED)
+	rerunbutton.config(state=DISABLED)
+
+	entryFs.config(state=DISABLED) 
+	entryFr.config(state=DISABLED) 
+	entryBw.config(state=DISABLED) 
+	entryWd.config(state=DISABLED)
+	savebutton.config(state=DISABLED)
+	folderButton.config(state=DISABLED)
 
 def work():
 	global Ryx,shiftedRyx
-	executebutton.config(state=DISABLED)
-	rerunbutton.config(state=DISABLED)
-	entryOffman.config(state=DISABLED)
-	entryFs.config(state=DISABLED) 
-	entryBw.config(state=DISABLED) 
-	entryWd.config(state=DISABLED)
+	
+	disableFields()
+	
 	plt.clf()
 	plt.title('Estimated impulse response')
 	plt.ylabel('Amplitude')
 	plt.xlabel('Time [us]')
 	fig.canvas.draw()
 
-	Ryx = routine_remote(Fs,bw,wd=wd,offman=offman)
+	Ryx = routine_remote(Fs,Fr,bw,wd=wd,offman=offman)
 	if Ryx is not None:
 		print "\n"*5
 		print '>'*80 
@@ -88,22 +108,12 @@ def work():
 	else:
 		print("Try again")
 
-	executebutton.config(state=NORMAL)
-	rerunbutton.config(state=NORMAL)
-	entryOffman.config(state=NORMAL)
-	entryFs.config(state=NORMAL)
-	entryBw.config(state=NORMAL)
-	entryWd.config(state=NORMAL)
+	enableFields()
 
 def rerun():
 	global Ryx,shiftedRyx,offman
 
-	executebutton.config(state=DISABLED)
-	rerunbutton.config(state=DISABLED)
-	entryOffman.config(state=DISABLED)
-	entryFs.config(state=DISABLED) 
-	entryBw.config(state=DISABLED) 
-	entryWd.config(state=DISABLED)
+	disableFields()
 	print("reruning data processing with offset {}".format(offman))
 	print("please wait...")
 
@@ -114,12 +124,7 @@ def rerun():
 	print '>'*80 
 	print '>'*80 
 
-	executebutton.config(state=NORMAL)
-	rerunbutton.config(state=NORMAL)
-	entryOffman.config(state=NORMAL)
-	entryFs.config(state=NORMAL)
-	entryBw.config(state=NORMAL)
-	entryWd.config(state=NORMAL)
+	enableFields()
 
 
 
@@ -136,11 +141,13 @@ def rr():
 	thread.start()
 
 
-def searchFileIter(pathDir):
+def searchFileIter(pathDir,fileName):
+
+
 	number =None
 	for i in range(1,1000):
 		
-		if os.path.isfile(pathDir+'m'+str(i)+'.dat'):
+		if os.path.isfile(pathDir+"/"+fileName+str(i)+'.dat'):
 			pass
 		else:
 			number =  i
@@ -150,17 +157,28 @@ def searchFileIter(pathDir):
 
 
 def updateEntry():
+	global path
 	entrySave.delete(0, 'end')
 	entrySave.config(state=NORMAL)
-	entrySave.insert(END,path + "m"+searchFileIter(path)+".dat")
+	entryFolder.delete(0, 'end')
+	entryFolder.config(state=NORMAL)
+
+	entryFolder.insert(END, path)
+	folder = entryFolder.get()
+
+	fileName = "Fs{0:g}-Fr{1:g}-bw{2:g}-wd{3:g}--".format(Fs/1e6,Fr/1e6,bw/1e6,wd)
+	fileName = fileName.replace(".","_")
+	entrySave.insert(END, fileName+searchFileIter(path,fileName)+".dat")
 
 
 def updatePlot():
 	global Ryx
 
 	l = len(Ryx)
-	range_b = l/Fs - 1/Fs
-	t=np.arange(0,range_b,1/Fs)*1e6
+	range_b = l/Fs 
+
+	t=np.arange(0,l)*1e6/Fs
+
 	plt.clf()
 	plt.plot(t,Ryx)
 	plt.title('Estimated impulse response')
@@ -169,19 +187,20 @@ def updatePlot():
 	fig.canvas.draw()
 	
 	updateEntry()
-	savebutton.config(state=NORMAL)
-	rerunbutton.config(state=NORMAL)
-	entryOffman.config(state=NORMAL)
-	entryFs.config(state=NORMAL)
-	entryBw.config(state=NORMAL)
-	entryWd.config(state=NORMAL)
+	
+	enableFields()
 
 def save(p):
 	global Ryx
-	Ryx.tofile(p)
-	print ("Impulse response saved in "+p)
+
+	f = path+"/"+p
+	Ryx.tofile(path+"/"+p)
+	print ("Impulse response saved in "+f)
 	updateEntry()
 
+def updateFolder(p):
+	global path
+	path = p
 
 
 
@@ -197,9 +216,6 @@ def left(event):
 def right(event):
 	updateShift(1)
 	
-def setOffman(p):
-	global offman
-	offman = int(p)	
 
 def setBw(p):
 	global bw
@@ -207,7 +223,11 @@ def setBw(p):
 
 def setFs(p):
 	global Fs
-	Fs = float(p*1e6)	
+	Fs = float(p*1e6)
+
+def setFr(p):
+	global Fr
+	Fr = float(p*1e6)		
 
 def setWd(p):
 	global wd
@@ -263,6 +283,22 @@ entryFs.pack(side=TOP)
 entryFs.config(state=NORMAL)
 ############
 
+###### Carrier frequency
+labelFr = Label(lblFrame, text="Carrier freq. [MHz]:")
+labelFr.pack(side=TOP)
+
+varFr =  IntVar(value=2400)  # initial value
+
+try:
+	varFr.trace("w", lambda name, index, mode, var=varFr: setFr(varFr.get()))
+except ValueError as err:
+	pass
+
+entryFr =  Spinbox(etrFrame, from_=300, to=3800,increment =10, textvariable=varFr )
+entryFr.pack(side=TOP)
+entryFr.config(state=NORMAL)
+############
+
  
 ###### bandwidth
 labelBw = Label(lblFrame, text="Bandwidth [MHz]:")
@@ -280,22 +316,6 @@ entryBw =  Spinbox(etrFrame, from_=1, to=20,increment = 0.5, textvariable=varBw 
 entryBw.pack(side=TOP)
 entryBw.config(state=NORMAL)
 ############
-
-##### offset
-labelOffset = Label(lblFrame, text="Manual offset [samples]:")
-labelOffset.pack(side=TOP)
-
-varOff =  IntVar(value=offman)  # initial value
-
-try:
-	varOff.trace("w", lambda name, index, mode, var=varOff: setOffman(varOff.get()))
-except ValueError as err:
-	pass
-
-entryOffman = Spinbox(etrFrame, from_=-100, to=100, textvariable=varOff )
-entryOffman.pack(side=TOP)
-entryOffman.config(state=NORMAL)
-######## 
 
 ##### wd
 labelwd = Label(lblFrame, text="Window duration [us]:")
@@ -341,16 +361,35 @@ toolbar.pack(side = TOP)
 ######################
 saveframe = Frame(dataframe)
 saveframe.pack(side = BOTTOM)
+lSaveFrame = Frame(saveframe)
+lSaveFrame.pack(side = LEFT)
+eSaveFrame = Frame(saveframe)
+eSaveFrame.pack(side = LEFT)
+sSaveFrame = Frame(saveframe)
+sSaveFrame.pack(side = LEFT)
 
-labelSave = Label(saveframe, text="Path to file:")
-labelSave.pack(side=LEFT)
-entrySave = Entry(saveframe, width=50)
-entrySave.pack(side=LEFT)
+labelSave = Label(lSaveFrame, text="File name:")
+labelSave.pack(side=TOP)
+
+entryFolder = Entry(eSaveFrame, width=50)
+entryFolder.pack(side=TOP)
+entryFolder.config(state=DISABLED)
+
+labelSave = Label(lSaveFrame, text="Path to folder:")
+labelSave.pack(side=TOP)
+entrySave = Entry(eSaveFrame, width=50)
+entrySave.pack(side=TOP)
 entrySave.config(state=DISABLED)
 
-savebutton = Button(saveframe, text="Save", command= lambda: save(entrySave.get()))
-savebutton.pack(side=RIGHT) 
+folderButton = Button(sSaveFrame, text="Update folder", command= lambda: updateFolder(entryFolder.get()))
+folderButton.pack(side=TOP) 
+folderButton.config(state=DISABLED)
+
+savebutton = Button(sSaveFrame, text="Save", command= lambda: save(entrySave.get()))
+savebutton.pack(side=TOP) 
 savebutton.config(state=DISABLED)
+
+
 
 
 

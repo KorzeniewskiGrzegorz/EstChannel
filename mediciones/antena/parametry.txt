@@ -1,0 +1,6 @@
+dwa rozne wzmocnienia, 
+slabsze to 25 db Tx 15 dB Rx 
+
+max Gain to 25 db Tx i Rx
+
+anteny sie widza, przodem do siebie, odleglosc 0,5 m

@@ -14,12 +14,32 @@ def dataProcess(Fs , #Sample freq
 	plotMode=False):
 	ruidoR = np.fromfile(path + "ruidoR.dat",'float32')
 	ruidoI = np.fromfile(path + "ruidoI.dat",'float32')
-	ruidoC = ruidoR + 1j * ruidoI
+
+
+	if len(ruidoR) != len(ruidoI):
+		print '!'*40
+		print "WARNING! SIZE ERROR OF TX SAMPLES"
+		print "I:{}".format(len(ruidoR))
+		print "Q:{}".format(len(ruidoI))
+		print '!'*40
+	
+	ruidoC = ruidoR[0:int(2*Fs)] + 1j * ruidoI[0:int(2*Fs)]
+
+
 	del ruidoR,ruidoI
 
 	dataR = np.fromfile(path + "dataR.dat",'float32')
 	dataI = np.fromfile(path + "dataI.dat",'float32')
-	dataC = dataR + 1j * dataI
+
+
+	if len(dataR) != len(dataI):
+		print '!'*40
+		print "WARNING! SIZE ERROR OF RX SAMPLES"
+		print "I:{}".format(len(dataR))
+		print "Q:{}".format(len(dataI))
+		print '!'*40
+	
+	dataC = dataR[0:int(2*Fs)] + 1j * dataI[0:int(2*Fs)]
 	del dataR,dataI
 
 	#lenRRaw=len(ruidoC)
@@ -36,12 +56,12 @@ def dataProcess(Fs , #Sample freq
 
 	# signal calibration
 	offset = offcalc(dataC,Fs) + offman #received samples offset due to hardware & software lag [samples];
-
+	del dataC
 
 	dataR = np.fromfile(path + "fdataR.dat",'float32')
 	dataI = np.fromfile(path + "fdataI.dat",'float32')
 
-	dataC = dataR + 1j * dataI
+	dataC = dataR[0:int(2*Fs)] + 1j * dataI[0:int(2*Fs)]
 	del dataR,dataI
 
 	ruidoC = ruidoC[ int(calibrationOffset) : int(calibrationOffset*Fs) ];
@@ -82,11 +102,11 @@ def dataProcess(Fs , #Sample freq
 
 
 def main():
-	Fs = 20e6 #Sample freq
+	Fs = 30e6 #Sample freq
 	wd = 100; # window duration [us] for the correlation purpose
 	path = "/dev/shm/"
 
-	dataProcess(Fs,wd,path)
+	dataProcess(Fs,wd,path,plotMode = True)
 
 
 if __name__ == '__main__':

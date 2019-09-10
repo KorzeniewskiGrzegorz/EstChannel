@@ -42,7 +42,7 @@ class top_block(gr.top_block):
         self.osmosdr_source_1.set_dc_offset_mode(0, 0)
         self.osmosdr_source_1.set_iq_balance_mode(0, 0)
         self.osmosdr_source_1.set_gain_mode(True, 0)
-        self.osmosdr_source_1.set_gain(15, 0)
+        self.osmosdr_source_1.set_gain(25, 0)
         self.osmosdr_source_1.set_if_gain(0, 0)
         self.osmosdr_source_1.set_bb_gain(0, 0)
         self.osmosdr_source_1.set_antenna('RX', 0)
@@ -137,7 +137,7 @@ def blader_stat(sr,bw,e,top_block_cls=top_block, options=None):
         e.set()
         
 
-    t = Timer(2, finish, [e])
+    t = Timer(3, finish, [e])
     t.start() # after 30 seconds, "hello, world" will be printed     
 
 if __name__ == '__main__':

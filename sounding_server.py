@@ -8,7 +8,7 @@ import threading
 from blader_Tx import blader_Tx
 
 
-def server_work(s,name,Fs =20e6):
+def server_work(s,name,Fs =20e6, Fr = 2400e6):
 
 	while True:
 		
@@ -40,7 +40,7 @@ def server_work(s,name,Fs =20e6):
 
 				result_available = threading.Event()
 
-				thread = threading.Thread(target=blader_Tx, args=(Fs,bw,result_available,))
+				thread = threading.Thread(target=blader_Tx, args=(Fs,Fr,bw,result_available,))
 				thread.start()
 
 	        	result_available.wait()
@@ -65,6 +65,7 @@ def sounding_server():
 	os.system("bladeRF-cli -d '*:serial=32a' -e \"set smb_mode input\"")
 
 	Fs = 20e6
+	Fr = 2400e6
 	path = '/dev/shm/'
 	
 	ip = '192.168.10.4'
@@ -80,7 +81,7 @@ def sounding_server():
 	s.listen(1)
 
 	try:
-		server_work(s,name,Fs)
+		server_work(s,name,Fs,Fr)
 	
 	except KeyboardInterrupt:
 		print("\nserver shutted down")

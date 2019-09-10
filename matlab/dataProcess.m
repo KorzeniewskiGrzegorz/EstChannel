@@ -7,8 +7,8 @@ format long
 %%%%%%%%%%%%%%%%%%%%%%%
 
 
-Fs=20e6; %Sample freq
-wd=100; % window duration [us] for the correlation purpose
+Fs=38e6; %Sample freq
+wd=10; % window duration [us] for the correlation purpose
 path="/dev/shm/";
 
 

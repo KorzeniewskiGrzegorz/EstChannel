@@ -57,9 +57,10 @@ def main():
 
 
 		Fs = 20e6
+		Fr = 2400e6
 		Ryx = None
 		print("transmitting...")
-		Ryx = routine_stat(Fs,plotMode=True)
+		Ryx = routine_stat(Fs,Fr,plotMode=True)
 
 		print("done")
 		print(Ryx)

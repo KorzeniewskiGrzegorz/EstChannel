@@ -36,11 +36,12 @@ def server_work(s,name,Fs =20e6):
 				parms = strs.split(",")
 
 				Fs = float(parms[0].split(":")[1])
-				bw = float(parms[1].split(":")[1])
+				Fr = float(parms[1].split(":")[1])
+				bw = float(parms[2].split(":")[1])
 
 				result_available = threading.Event()
 
-				thread = threading.Thread(target=blader_Tx, args=(Fs,bw,result_available,))
+				thread = threading.Thread(target=blader_Tx, args=(Fs,Fr,bw,result_available,))
 				thread.start()
 
 	        	result_available.wait()
@@ -74,7 +75,7 @@ def sounding_server():
 
 	HOST ='192.168.10.3'              # Symbolic name meaning all available interfaces
 	#HOST = '127.0.0.1'   
-	PORT = 50006             # Arbitrary non-privileged port
+	PORT = 50007             # Arbitrary non-privileged port
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	s.bind((HOST, PORT))
 	s.listen(1)

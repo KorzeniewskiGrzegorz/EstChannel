@@ -6,7 +6,7 @@ format long
 
 ot = 0.15;
 
-sync = abs(data);
+sync = real(data) + imag(data);
 signal = sync(floor((ot+0.12)*Fs):floor((ot+0.14)*Fs));
 
 %figure
@@ -17,20 +17,19 @@ noise = sync(floor((0.05)*Fs):floor((0.07)*Fs));
 %figure
 %plot(noise)
 
-meanSignal = mean(signal);
+meanSignal = max(signal)
 
-meanNoise = mean(noise);
-ratio = meanSignal/meanNoise;
+meanNoise = max(noise)
+
+threshold = meanSignal - (meanSignal-meanNoise)*0.5
 
 
-if ratio > 1
-    threshold = meanNoise +0.2*ratio*meanNoise;
-    offset = floor(find(sync(0.05*Fs:end) > threshold,1) +0.4*Fs ) -30;
-else
-    ratio = 1/ratio;
-    threshold = meanNoise -0.2*ratio*meanNoise;
-    offset = floor(find(sync(0.05*Fs:end) < threshold,1) +0.4*Fs ) -30;
-end
+id1 = find(sync(0.05*Fs:end) > threshold,1) ;
 
+id2 = find(sync(0.05*Fs:end) < -threshold,1) ;
+
+id = [id1,id2]
+
+offset = floor(min(id) +0.4*Fs  - (1/19e3)/8 * Fs);
 end
 

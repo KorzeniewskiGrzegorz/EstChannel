@@ -12,6 +12,7 @@ from dcFilter import dcFilter
 from scipy.ndimage.interpolation import shift
 
 def routine_stat(Fs,
+			Fr=2400e6,
 			bw=1.5e6,
 			offman =0,
 			plotMode=False,
@@ -28,7 +29,7 @@ def routine_stat(Fs,
 	######################
 
 	result_available = threading.Event()
-	thread = threading.Thread(target=blader_stat, args=(Fs,bw,result_available,))
+	thread = threading.Thread(target=blader_stat, args=(Fs,Fr,bw,result_available,))
 	thread.start()
 	print("transmitting...")
 	result_available.wait()
@@ -36,8 +37,8 @@ def routine_stat(Fs,
 
 	dcFilter()
 
-	print("\n")
-	print "%"*40
+
+	
 
 	print("processing data ...")
 

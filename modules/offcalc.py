@@ -7,7 +7,8 @@ from scipy.signal import find_peaks
 def offcalc(data,Fs):
 	
 	ot = 0.15
-	sync = np.abs(data)
+
+	sync = np.real(data) + np.imag(data)
 
 
 	signal = sync[int((ot+0.12)*Fs) : int((ot+0.14)*Fs)]
@@ -17,17 +18,17 @@ def offcalc(data,Fs):
 
 	meanSignal = np.mean(signal)
 	meanNoise  = np.mean(noise)
+	
+	threshold = meanSignal 
 
-	ratio = meanSignal / meanNoise
 
-	if ratio > 1 :
-		threshold = meanNoise +0.2*ratio*meanNoise;
-		offset = int(np.argwhere(sync[int(0.05*Fs):] > threshold)[0]) + int(0.4*Fs)  -30;
+	if meanSignal > meanNoise :
+	
+		offset = int(np.argwhere(sync[int(0.05*Fs):] > threshold)[0]) + int(0.4*Fs)  -30
 
 	else:
-		ratio = 1/ratio
-		threshold = meanNoise -0.2*ratio*meanNoise;
-		offset = int(np.argwhere(sync[int(0.05*Fs):] <threshold)[0]) + int(0.4*Fs)  -30;
+
+		offset = int(np.argwhere(sync[int(0.05*Fs):] <threshold)[0]) + int(0.4*Fs)  -30
 
 
 	return offset

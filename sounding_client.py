@@ -17,17 +17,19 @@ import matplotlib.backends.backend_tkagg as tkagg
 import matplotlib.pyplot as plt
 
 from routine_remote import * 
+from routine_stat import *
 
 ############ GLOBAL ################################################
-Fs = 20e6
-Fr = 2400e6
+Fs = 38e6
+Fr = 2170e6
 Ryx = None
 path = "mediciones"
 count = 0
 shiftedRyx = None
 offman = 0
-bw = 1.5e6
+bw = 28e6
 wd = 10
+mode = "Remote"
 ####################################################################
 
 class StdRedirector(object):
@@ -35,10 +37,10 @@ class StdRedirector(object):
         self.text_space = text_widget
 
     def write(self, string):
-        self.text_space.config(state=NORMAL)
+        #self.text_space.config(state=NORMAL)
         self.text_space.insert("end", string)
         self.text_space.see("end")
-        self.text_space.config(state=DISABLED)
+        #self.text_space.config(state=DISABLED)
 
 class Shifted:
 	def __init__(self,org ):
@@ -66,7 +68,6 @@ def _destroyWindow():
 def enableFields():
 
 	executebutton.config(state=NORMAL)
-	rerunbutton.config(state=NORMAL)
 	entryFr.config(state=NORMAL)
 	entryFs.config(state=NORMAL)
 	entryBw.config(state=NORMAL)
@@ -77,8 +78,6 @@ def enableFields():
 
 def disableFields():
 	executebutton.config(state=DISABLED)
-	rerunbutton.config(state=DISABLED)
-
 	entryFs.config(state=DISABLED) 
 	entryFr.config(state=DISABLED) 
 	entryBw.config(state=DISABLED) 
@@ -97,9 +96,14 @@ def work():
 	plt.xlabel('Time [us]')
 	fig.canvas.draw()
 
-	Ryx = routine_remote(Fs,Fr,bw,wd=wd,offman=offman)
+	if mode == "Remote":
+		Ryx = routine_remote(Fs,Fr,bw,wd=wd,offman=offman)
+	else :
+		Ryx = routine_stat(Fs,Fr,bw,wd=wd,offman=offman)
+
+
 	if Ryx is not None:
-		print "\n"*5
+		print "\n"
 		print '>'*80 
 		print '>'*80 
 		shiftedRyx = Shifted(Ryx)
@@ -110,23 +114,6 @@ def work():
 
 	enableFields()
 
-def rerun():
-	global Ryx,shiftedRyx,offman
-
-	disableFields()
-	print("reruning data processing with offset {}".format(offman))
-	print("please wait...")
-
-	Ryx = dataProcess(Fs,wd=wd,offman=offman,plotMode=False)
-	shiftedRyx = Shifted(Ryx)
-	updatePlot()
-	print("Done")
-	print '>'*80 
-	print '>'*80 
-
-	enableFields()
-
-
 
 def start():
 	#global Ryx
@@ -135,12 +122,6 @@ def start():
 	#Ryx = np.fromfile(path+'m1.dat','double')
 	#work()
 	
-def rr():
-
-	thread = threading.Thread(target=rerun)
-	thread.start()
-
-
 def searchFileIter(pathDir,fileName):
 
 
@@ -201,7 +182,7 @@ def save(p):
 def updateFolder(p):
 	global path
 	path = p
-
+	updateEntry()
 
 
 def updateShift(direction):
@@ -232,11 +213,15 @@ def setFr(p):
 def setWd(p):
 	global wd
 	wd = float(p)	
+
+def change_dropdown(*args):
+    global mode
+    mode = tkvar.get()
 	
 
 ########
 root = Tk()
-root.title("Remote sounding")
+root.title("Channel sounding")
 root.protocol('WM_DELETE_WINDOW', _destroyWindow)
 root.geometry("1350x600")
 
@@ -271,14 +256,14 @@ etrFrame.pack(side = RIGHT)
 labelFs = Label(lblFrame, text="Sampling freq. [MHz]:")
 labelFs.pack(side=TOP)
 
-varFs =  IntVar(value=20)  # initial value
+varFs =  IntVar(value=int(Fs/1e6))  # initial value
 
 try:
 	varFs.trace("w", lambda name, index, mode, var=varFs: setFs(varFs.get()))
 except ValueError as err:
 	pass
 
-entryFs =  Spinbox(etrFrame, from_=1, to=20, textvariable=varFs )
+entryFs =  Spinbox(etrFrame, from_=1, to=38, textvariable=varFs )
 entryFs.pack(side=TOP)
 entryFs.config(state=NORMAL)
 ############
@@ -287,7 +272,7 @@ entryFs.config(state=NORMAL)
 labelFr = Label(lblFrame, text="Carrier freq. [MHz]:")
 labelFr.pack(side=TOP)
 
-varFr =  IntVar(value=2400)  # initial value
+varFr =  IntVar(value=int(Fr/1e6))  # initial value
 
 try:
 	varFr.trace("w", lambda name, index, mode, var=varFr: setFr(varFr.get()))
@@ -305,14 +290,14 @@ labelBw = Label(lblFrame, text="Bandwidth [MHz]:")
 labelBw.pack(side=TOP)
 
 
-varBw =  DoubleVar(value=1.5)  # initial value
+varBw =  DoubleVar(value=bw/1e6)  # initial value
 
 try:
 	varBw.trace("w", lambda name, index, mode, var=varBw: setBw(varBw.get()))
 except ValueError as err:
 	pass
 
-entryBw =  Spinbox(etrFrame, from_=1, to=20,increment = 0.5, textvariable=varBw )
+entryBw =  Spinbox(etrFrame, from_=1, to=28,increment = 0.5, textvariable=varBw )
 entryBw.pack(side=TOP)
 entryBw.config(state=NORMAL)
 ############
@@ -321,7 +306,7 @@ entryBw.config(state=NORMAL)
 labelwd = Label(lblFrame, text="Window duration [us]:")
 labelwd.pack(side=TOP)
 
-varWd =  IntVar(value=100)  # initial value
+varWd =  IntVar(value=wd)  # initial value
 
 try:
 	varWd.trace("w", lambda name, index, mode, var=varWd: setWd(varWd.get()))
@@ -334,9 +319,13 @@ entryWd.config(state=NORMAL)
 ######## 
 
 ####### buttons
-rerunbutton = Button(buttonFrame, text="Rerun data process", command= rr)
-rerunbutton.pack(side=BOTTOM)
-rerunbutton.config(state=DISABLED)  
+
+tkvar = StringVar(root)
+choices = { 'Remote','Stationary'}
+tkvar.set('Remote') # set the default option
+popupMenu = OptionMenu(buttonFrame, tkvar, *choices)
+popupMenu.pack()
+tkvar.trace('w', change_dropdown)
 
 executebutton = Button(buttonFrame, text="Run", command=start)
 executebutton.pack(side = BOTTOM) 

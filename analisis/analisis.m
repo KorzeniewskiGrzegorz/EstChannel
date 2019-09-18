@@ -1,17 +1,20 @@
-close all
-clear all
-
-path = "/home/udg/git/EstChannel/mediciones/antena/";
 
 
-fid=fopen(path +"antena_Fs35_Fr2170_bw20_wd10__0.dat",'rb');
-imp=fread(fid,'double');
+path = "/home/udg/git/EstChannel/mediciones/gps/";
 
 
+fid=fopen(path +"Fs38-Fr2170-bw20-wd10--1.dat",'rb');
+imp1=fread(fid,'double');
+
+path = "/home/udg/git/EstChannel/mediciones/gps/";
+
+fid=fopen(path +"Fs20-Fr2170-bw20-wd10--1.dat",'rb');
+imp2=fread(fid,'double');
 
 %%%%%normalize
-if 1==2
-    imp = imp/ max(imp);
+if 1==1
+    imp1 = imp1/ max(imp1);
+    imp2 = imp2/ max(imp2);
 end
 
 
@@ -20,8 +23,8 @@ end
 figure
 hold on
 grid on
- stem(imp)
-
+ plot(imp1)
+% plot(imp2)
 
 hold off
 
@@ -30,6 +33,6 @@ pdp = xcorr(imp,imp);
 pdp = pdp((length(pdp)+1)/2:end);
 
 figure
-plot(pdp)
+stem(pdp)
 
 

@@ -24,6 +24,7 @@ def whiteNoiseGen(Fs,R =0.01,duration = 1,wd =0.0001, path ='/dev/shm/'):
 
 	ISync = syncpulse(Fs,syncPulseLen,)
 
+	#IData = IData / np.amax(IData)
 	IData = np.append (ISync, IData)
 
 	data_len =np.size(IData)
@@ -47,7 +48,7 @@ def main():
 	
 	Fs = 20e6  # sample freq [Hz]
 	R = 0.01 # pulse ratio (0-1 range) for signal break
-	duration = 1 # signal duration [s]
+	duration = 0.6 # signal duration [s]
 	wd = 0.0001
 	path="/dev/shm/"
 
@@ -55,44 +56,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-
-#IData = zeros(1,floor(Fs*duration));
-
-#v = segundos/wd;
-#N= Fs*wd ;
-
-#for i=1: v
-    #w = zeros(1,floor(Fs*wd));
-    #w(1,1:floor(Fs*wd)- floor(Fs*wd)*(1-R)) = randn(1,floor(Fs*wd)- floor(Fs*wd)*(1-R));
-
-    #IData(1,(i-1)*N+1:i*N) = w; 
-#end
-
-
-#ISync = syncpulse(Fs,0.5,0.2,0.1);
-
-#IData = [ISync, IData];
-
-#data_len =length(IData);
-
-#%QData = [zeros(1,Fs/4) IData]; % 90 degree delay, quadrature signal
-#%QData = QData(1,1:data_len);
-
-#QData = zeros(1,data_len);
-
-
-#t = 0:1/Fs:(data_len-1)/Fs;
-
-#plot(t,IData,'b',t,QData,'r')
-
-#f = fopen (path+"IPulse.dat", 'wb');
-#fwrite (f, IData,'float');
-#fclose (f);
-
-#f = fopen (path+"QPulse.dat", 'wb');
-#fwrite (f, QData,'float');
-#fclose (f);
 

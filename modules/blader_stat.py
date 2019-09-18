@@ -22,14 +22,14 @@ import threading
 
 class top_block(gr.top_block):
 
-    def __init__(self,sr,bw):
+    def __init__(self,sr,fr,bw):
         gr.top_block.__init__(self, "Top Block")
 
         ##################################################
         # Variables
         ##################################################
         self.samp_rate = samp_rate = sr
-        self.freq = freq = 2400e6
+        self.freq = freq = fr
         self.bandwidth = bandwidth = bw
 
         ##################################################
@@ -116,22 +116,24 @@ class top_block(gr.top_block):
         self.osmosdr_sink_0.set_bandwidth(self.bandwidth, 0)
 
 
-def blader_stat(sr,bw,e,top_block_cls=top_block, options=None):
+def blader_stat(sr,fr,bw,e,top_block_cls=top_block, options=None):
 
 
-    tb = top_block_cls(sr,bw)
+    tb = top_block_cls(sr,fr,bw)
     tb.start()
    
     start=time.time()
 
     def finish(e):
         end = time.time()
-        print("\n")
+        print "\n"
         print "%"*40
         print("transmission time: \t"+str(end-start)+"s")
         print("\tsamp rate: \t"+str(tb.samp_rate)+" samples/s")
         print("\tcarr freq: \t"+str(tb.freq)+"Hz")
         print("\tbandwidth: \t"+str(tb.bandwidth)+"Hz")
+        print "%"*40
+        print "\n"
         tb.stop()
         tb.wait()
         e.set()
@@ -143,12 +145,13 @@ def blader_stat(sr,bw,e,top_block_cls=top_block, options=None):
 if __name__ == '__main__':
 
     Fs = 20e6
+    Fr = 2400e6
     bw = 1.5e6
 
     
 
     result_available = threading.Event()
-    thread = threading.Thread(target=blader_stat, args=(Fs,bw,result_available,))
+    thread = threading.Thread(target=blader_stat, args=(Fs,Fr,bw,result_available,))
     thread.start()
     print("transmitting...")
     result_available.wait()

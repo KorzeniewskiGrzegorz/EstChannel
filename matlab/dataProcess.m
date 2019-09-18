@@ -28,11 +28,11 @@ clear ruidoI
 
 lenRRaw=length(ruidoC(:,1));
 
-fid=fopen(path+"dataR.dat",'rb');
+fid=fopen(path+"fdataR.dat",'rb');
 dataR=fread(fid,'float');
 
 
-fid=fopen(path+"dataI.dat",'rb');
+fid=fopen(path+"fdataI.dat",'rb');
 dataI=fread(fid,'float');
 
 dataR = dataR(1:2*Fs);
@@ -52,19 +52,9 @@ lenDRaw=length(dataC(:,1));
 calibrationOffset = 0.6 *Fs ; % conversion from time to samples
 
 
+
 % signal calibration
-offset = offsetcalc(dataC,Fs); % received samples offset due to hardware & software lag [samples]
-
-
-fid=fopen(path+"fdataR.dat",'rb');
-dataR=fread(fid,'float');
-
-fid=fopen(path+"fdataI.dat",'rb');
-dataI=fread(fid,'float');
-
-dataR = dataR(1:2*Fs);
-dataI = dataI(1:2*Fs);
-dataC=complex(dataR,dataI); % filtered rx complex data
+offset = 17144384%;offsetcalc(dataC,Fs); % received samples offset due to hardware & software lag [samples]
 
 dataC  = dataC (offset+1:offset +Fs);
 ruidoC = ruidoC(calibrationOffset+1:calibrationOffset+Fs);
@@ -131,9 +121,9 @@ grid;
 %[maximum,pico]=max(abs(Ryx));
 %pico=pico/Fs
 
-%f = fopen ("datos/ImpResp.dat", 'ab');
-%v = fwrite (f, abs(Ryx),'float');
-%fclose (f);
+f = fopen ("NLOS.dat", 'ab');
+v = fwrite (f, abs(Ryx),'double');
+fclose (f);
 
 %&&&&&&&&&&&&&&&&&&&&&&
 

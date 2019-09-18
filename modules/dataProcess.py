@@ -55,7 +55,7 @@ def dataProcess(Fs , #Sample freq
 	calibrationOffset = 0.6 *Fs  #conversion from time to samples
 
 	# signal calibration
-	offset = offcalc(dataC,Fs) + offman #received samples offset due to hardware & software lag [samples];
+	offset = offcalc(dataC[0:int(Fs*0.8)],Fs) + offman #received samples offset due to hardware & software lag [samples];
 	del dataC
 
 	dataR = np.fromfile(path + "fdataR.dat",'float32')

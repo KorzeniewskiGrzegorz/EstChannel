@@ -10,10 +10,15 @@ def  syncpulse(Fs,duration):
 
 	ISync = np.zeros(int(Fs*wd))
 
-	ISync[int(Fs*wd*(1-R)):] = 5
+
+	#t = np.arange(0,wd*R,1/Fs)
+	#s = 1* np.sin(2*np.pi*19e3*t)
+	s=1
+	ISync[int(Fs*wd*(1-R)):] = s
 
 	ISync = np.append (ISync, np.zeros(int(Fs*0.1)+1))
-
+	#plt.plot(ISync)
+	#plt.show()
 	return ISync
 
 
@@ -24,7 +29,7 @@ def main():
 
 
 
-	sync = syncpulse(Fs,duration,)
+	sync = syncpulse(Fs,duration)
 
 
 if __name__ == '__main__':

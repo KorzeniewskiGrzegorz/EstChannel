@@ -19,17 +19,22 @@ IData = zeros(1,floor(Fs*duration));
 v = duration/wd;
 N= Fs*wd ;
 
+
 for i=1: v
     w = zeros(1,floor(Fs*wd));
     w(1,1:floor(Fs*wd)- floor(Fs*wd)*(1-R)) = randn(1,floor(Fs*wd)- floor(Fs*wd)*(1-R));
 
+
     IData(1,(i-1)*N+1:i*N) = w; 
 end
 
+IData = IData/ max(IData);
 
 ISync = syncpulse(Fs,0.6);
 
 IData = [ISync, IData];
+
+%IData = IData/max(IData);
 
 data_len =length(IData);
 
@@ -41,6 +46,7 @@ QData = zeros(1,data_len);
 
 t = 0:1/Fs:(data_len-1)/Fs;
 
+figure
 plot(t,IData,'b',t,QData,'r')
 
 f = fopen (path+"IPulse.dat", 'wb');

@@ -63,7 +63,7 @@ def server_work(s,name,Fs =20e6, Fr = 2400e6):
 
 
 def sounding_server():
-	os.system("bladeRF-cli -d '*:serial=32a' -e \"set smb_mode input\"")
+	#os.system("bladeRF-cli -d '*:serial=32a' -e \"set smb_mode input\"")
 
 	Fs = 20e6
 	Fr = 2400e6

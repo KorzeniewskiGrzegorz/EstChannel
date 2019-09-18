@@ -109,7 +109,7 @@ def blader_Tx(sr,fr,bw,e,top_block_cls=top_block, options=None):
 if __name__ == '__main__':
 
     result_available = threading.Event()
-    thread = threading.Thread(target=sondeoTx, args=(20e6,2400e6,20e6,result_available,))
+    thread = threading.Thread(target=blader_Tx, args=(20e6,2400e6,20e6,result_available,))
     thread.start()
     print("transmitting...")
     result_available.wait()

@@ -8,15 +8,13 @@ def  syncpulse(Fs,duration):
 	R = 0.5
 	wd = duration - 0.1
 
-	ISync = np.zeros(int(Fs*wd))
+	t = np.arange(0,wd*R,1/Fs)
+	s1 = 1* np.sin(2*np.pi*5e3*t)
+	s2 = 1* np.sin(2*np.pi*20e3*t)
 
 
-	#t = np.arange(0,wd*R,1/Fs)
-	#s = 1* np.sin(2*np.pi*19e3*t)
-	s=1
-	ISync[int(Fs*wd*(1-R)):] = s
-
-	ISync = np.append (ISync, np.zeros(int(Fs*0.1)+1))
+	s = np.append(s1 ,s2)
+	ISync = np.append(s ,np.zeros(int(Fs*0.1)+1))
 	#plt.plot(ISync)
 	#plt.show()
 	return ISync

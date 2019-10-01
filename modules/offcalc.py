@@ -3,35 +3,28 @@ import sys
 import numpy as np 
 import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
+from numpy import argmax, sqrt, mean, absolute, linspace, log10, logical_and, average, diff, correlate,argwhere,flip
+from matplotlib.mlab import find
+
 
 def offcalc(data,Fs):
-	
-	ot = 0.15
 
-	sync = np.real(data) + np.imag(data)
+	sig = np.real(data) + np.imag(data)
 
+	zx = np.where(np.diff(np.sign(sig)))[0]  
 
-	signal = sync[int((ot+0.12)*Fs) : int((ot+0.14)*Fs)]
+	der = diff(zx)
 
-	noise  = sync[int(0.05*Fs) : int(0.07*Fs)]
-
-
-	meanSignal = np.mean(signal)
-	meanNoise  = np.mean(noise)
-	
-	threshold = meanSignal 
+	flips= flip(der,0)
 
 
-	if meanSignal > meanNoise :
-	
-		offset = int(np.argwhere(sync[int(0.05*Fs):] > threshold)[0]) + int(0.4*Fs)  -30
-
-	else:
-
-		offset = int(np.argwhere(sync[int(0.05*Fs):] <threshold)[0]) + int(0.4*Fs)  -30
-
+	threshold = max(flips[1:int(len(flips)/10)]) * 5 
+	idOdwrocone = argwhere(flips > threshold)[0]
+	idx = len(zx) - idOdwrocone
+	offset = int(zx[idx] + der[idx]+ 0.1*Fs);
 
 	return offset
+
 
 
 

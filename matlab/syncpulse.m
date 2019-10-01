@@ -9,13 +9,13 @@ function [ISync] = syncpulse(Fs,duration)
     ISync = zeros(1,floor(Fs*wd));
     
     t=0:1/Fs:wd*R;
-    s = sin(2*pi*19e3*t);
-    figure
-    plot(s)
+    s1 = sin(2*pi*10e3*t);
+    s2 = sin(2*pi*20e3*t);
+
     %s=1;
-    ISync(1,floor(Fs*wd)*R:end) = s;
+
     
-    ISync = [ISync, zeros(1,Fs*0.1)];
+    ISync = [s1, s2, zeros(1,Fs*0.1)];
     
 
 

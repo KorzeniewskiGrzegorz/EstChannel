@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from syncpulse import *
 
 
-def whiteNoiseGen(Fs,R =0.01,duration = 1,wd =0.0001, path ='/dev/shm/'):
+def whiteNoiseGen(Fs,R =0.01,duration = 1,wd =0.0001, path ='/dev/shm/', plotMode =0):
 
 	print("whiteNoiseGen - Generating ...")
 	
@@ -24,7 +24,7 @@ def whiteNoiseGen(Fs,R =0.01,duration = 1,wd =0.0001, path ='/dev/shm/'):
 
 	ISync = syncpulse(Fs,syncPulseLen,)
 
-	#IData = IData / np.amax(IData)
+	IData = IData / np.amax(IData) # !!!VERY IMPORTANT!!! necessary to avoid value saturation
 	IData = np.append (ISync, IData)
 
 	data_len =np.size(IData)
@@ -32,10 +32,11 @@ def whiteNoiseGen(Fs,R =0.01,duration = 1,wd =0.0001, path ='/dev/shm/'):
 
 	QData = np.zeros(data_len)
 
-	#t=np.linspace(0, duration+syncPulseLen, num=data_len)
+	if plotMode is 1:
+		t=np.linspace(0, duration+syncPulseLen, num=data_len)
 
-	#plt.plot(t,IData,'b',t,QData,'r')
-	#plt.show()
+		plt.plot(t,IData,'b',t,QData,'r')
+		plt.show()
 
 
 
@@ -52,7 +53,7 @@ def main():
 	wd = 0.0001
 	path="/dev/shm/"
 
-	whiteNoiseGen(Fs,R)
+	whiteNoiseGen(Fs,R,plotMode = 1)
 
 if __name__ == '__main__':
     main()

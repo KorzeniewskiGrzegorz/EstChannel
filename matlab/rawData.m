@@ -12,6 +12,7 @@ Fs=38e6; %Sample freq
 path="/dev/shm/";
 
 
+
 %%%%%%%%%5%%%%%%%%%%%%%
 %fid=fopen(path+"ruidoR.dat",'rb');
 %ruidoR=fread(fid,'float');
@@ -19,24 +20,22 @@ path="/dev/shm/";
 %fid=fopen(path+"ruidoI.dat",'rb');
 %ruidoI=fread(fid,'float');
 
-fid=fopen(path+"dataR.dat",'rb');
-dataR=fread(fid,'float');
+fid=fopen(path+"fdataR.dat",'rb');
+bdataR=fread(fid,'float');
 
-fid=fopen(path+"dataI.dat",'rb');
-dataI=fread(fid,'float');
+fid=fopen(path+"fdataI.dat",'rb');
+bdataI=fread(fid,'float');
 
-dataR = dataR(1:2.5*Fs);
-dataI = dataI(1:2.5*Fs);
+bdataR = bdataR(1:0.6*Fs);
+bdataI = bdataI(1:0.6*Fs);
 
-
-%lenRRaw=length(ruidoR(:,1));
-
-lenDRaw=length(dataR(:,1));
+lenDRaw=length(bdataR(:,1));
 
 %ruidoC=complex(ruidoR,ruidoI); 
-dataC=complex(dataR,dataI); 
+bdataC=complex(bdataR,bdataI); 
 
-%y = doFilter(dataC);
+
+%y = doFilterLow(dataC);
 
 %clear ruidoR
 %clear ruidoI
@@ -46,9 +45,47 @@ clear dataI
 
 figure
 
-plot(0:1/Fs:lenDRaw/Fs-1/Fs,real(dataC)+ imag(dataC))%,0:1/Fs:lenDRaw/Fs-1/Fs,dataI)
-title('unfiltered')
+plot(0:1/Fs:lenDRaw/Fs-1/Fs,real(bdataC)+ imag(bdataC))%,0:1/Fs:lenDRaw/Fs-1/Fs,dataI)
+title('bad')
 xlabel('time [s]')
+
+
+
+%path="/home/udg/Documentos/8dbsnr/";
+
+
+
+%fid=fopen(path+"fdataR.dat",'rb');
+%dataR=fread(fid,'float');
+%
+%fid=fopen(path+"fdataI.dat",'rb');
+%dataI=fread(fid,'float');
+
+%dataR = dataR(1:0.6*Fs);
+%dataI = dataI(1:0.6*Fs);
+
+
+%lenRRaw=length(ruidoR(:,1));
+
+%l%enDRaw=length(dataR(:,1));
+
+%ruidoC=complex(ruidoR,ruidoI); 
+%dataC=complex(dataR,dataI); 
+
+
+%y = doFilterLow(dataC);
+
+%clear ruidoR
+%clear ruidoI
+%clear dataR
+%clear dataI
+%Raw data plotting
+
+%figure
+
+%plot(0:1/Fs:lenDRaw/Fs-1/Fs,real(dataC)+ imag(dataC))%,0:1/Fs:lenDRaw/Fs-1/Fs,dataI)
+%title('good')
+%xlabel('time [s]')
 
 
 %figure
@@ -59,7 +96,7 @@ xlabel('time [s]')
 %xlabel('time [s]')
 
 
-%X=fftshift(fft(dataR+dataI));
+%X=fftshift(fft(real(dataC)+imag(dataC)));
 %N=length(X);
 %figure;
 %plot(Fs*(-N/2:N/2-1)/N,abs(X));

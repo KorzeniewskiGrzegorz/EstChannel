@@ -1,35 +1,47 @@
 function [offset] = offsetcalc(data,Fs)
-
 format long
-
 %%%%%%%%%%%%%%%%%%%%%%%
 
-ot = 0.15;
-
-sync = real(data) + imag(data);
-signal = sync(floor((ot+0.12)*Fs):floor((ot+0.14)*Fs));
-
-%figure
-%plot(signal)
-
-noise = sync(floor((0.05)*Fs):floor((0.07)*Fs));
-
-%figure
-%plot(noise)
-
-meanSignal = max(signal)
-
-meanNoise = max(noise)
-
-threshold = meanSignal - (meanSignal-meanNoise)*0.5
+s = real(data) + imag(data);
+sync =doFilterLow(s);
+figure
+plot(0:1/Fs:length(sync)/Fs-1/Fs,sync)
 
 
-id1 = find(sync(0.05*Fs:end) > threshold,1) ;
+zci = @(v) find(v(:).*circshift(v(:), [-1 0]) <= 0);                    % Returns Zero-Crossing Indices Of Argument Vector
+zx = zci(sync);   
 
-id2 = find(sync(0.05*Fs:end) < -threshold,1) ;
+figure
+plot(zx)
 
-id = [id1,id2]
+der=diff(zx);
 
-offset = floor(min(id) +0.4*Fs  - (1/19e3)/8 * Fs);
+figure
+plot(der)
+
+flips= flip(der);
+
+
+threshold = max(flips(1:floor(length(flips)/10))) * 5 
+idOdwrocone = find(flips > threshold,1) ;
+
+id1 = 914;%length(zx) - idOdwrocone;
+id2 = id1+10000;
+o1 = zx(id1) + der(id1)
+o2 = zx(id2) + der(id2)
+
+diffRate = 0.25/((o2-o1)/Fs);
+offset = floor(o2+ diffRate*0.1*Fs) ;
+
+%jedna czestotliwosc i bardzo duza, np 10 MHz cus takiego
+%policzyc maksa ostatniego kawalka
+% wszystko co jest mniejsze od polowy tego maksa wyzerowac
+%odwrocic wektor
+%pierwszy pik jest poszukiwany
+%id piku length(zx)-1907277 <- znaleziony indeks z odwroconego wektoru
+%oczekiwane id to 1109381 
+% zx(1109381) + der(1109381) indeks ostatniej probki syncu
+% dodac 0.1*Fs i mamy poczatek
+
 end
 

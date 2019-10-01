@@ -1,0 +1,7 @@
+tx 73 db
+rx 45 db
+snr 1 :16db
+    2: 5 db
+    3: 12 dB
+gpsdo 
+2xdirectional

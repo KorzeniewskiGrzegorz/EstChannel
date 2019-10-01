@@ -54,10 +54,11 @@ calibrationOffset = 0.6 *Fs ; % conversion from time to samples
 
 
 % signal calibration
-offset = 17144384%;offsetcalc(dataC,Fs); % received samples offset due to hardware & software lag [samples]
+offset =offsetcalc(dataC (1:0.6*Fs),Fs); % received samples offset due to hardware & software lag [samples]floor(0.447352158*Fs)
 
-dataC  = dataC (offset+1:offset +Fs);
-ruidoC = ruidoC(calibrationOffset+1:calibrationOffset+Fs);
+snr = SNRcalc(dataC (1:0.6*Fs),Fs,offset);
+dataC  = dataC (offset+1:offset +1*Fs);
+ruidoC = ruidoC(calibrationOffset+1:calibrationOffset+1*Fs);
 
 lenR=length(ruidoC(:,1));
 lenD=length(dataC(:,1));

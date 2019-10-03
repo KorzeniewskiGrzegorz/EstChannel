@@ -4,7 +4,7 @@
 
 close all
 clear all
-Fs = 20e6;  % sample freq [Hz]
+Fs = 38e6;  % sample freq [Hz]
 R=0.01; % pulse ratio (0-1 range) for signal break
 duration=1;% signal duration [s]
 wd=0.0001; % window duration [s]
@@ -33,6 +33,7 @@ IData = IData/ max(IData);
 ISync = syncpulse(Fs,0.6);
 
 IData = [ISync, IData];
+IData = [IData,IData];
 
 %IData = IData/max(IData);
 
@@ -44,16 +45,17 @@ data_len =length(IData);
 QData = zeros(1,data_len);
 
 
+
 t = 0:1/Fs:(data_len-1)/Fs;
 
 figure
 plot(t,IData,'b',t,QData,'r')
 
-f = fopen (path+"IPulse.dat", 'wb');
+f = fopen (path+"fdataR.dat", 'wb');
 fwrite (f, IData,'float');
 fclose (f);
 
-f = fopen (path+"QPulse.dat", 'wb');
+f = fopen (path+"fdataI.dat", 'wb');
 fwrite (f, QData,'float');
 fclose (f);
 

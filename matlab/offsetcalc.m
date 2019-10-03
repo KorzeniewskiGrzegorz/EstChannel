@@ -3,7 +3,7 @@ format long
 %%%%%%%%%%%%%%%%%%%%%%%
 
 s = real(data) + imag(data);
-sync =doFilterLow(s);
+sync=s;%sync =doFilterLow(s);
 figure
 plot(0:1/Fs:length(sync)/Fs-1/Fs,sync)
 
@@ -25,13 +25,12 @@ flips= flip(der);
 threshold = max(flips(1:floor(length(flips)/10))) * 5 
 idOdwrocone = find(flips > threshold,1) ;
 
-id1 = 914;%length(zx) - idOdwrocone;
-id2 = id1+10000;
-o1 = zx(id1) + der(id1)
-o2 = zx(id2) + der(id2)
+id = length(zx) - idOdwrocone;
 
-diffRate = 0.25/((o2-o1)/Fs);
-offset = floor(o2+ diffRate*0.1*Fs) ;
+o = zx(id) + der(id);
+
+
+offset = floor(o+ 0.1*Fs) 
 
 %jedna czestotliwosc i bardzo duza, np 10 MHz cus takiego
 %policzyc maksa ostatniego kawalka

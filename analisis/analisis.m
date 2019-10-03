@@ -1,67 +1,57 @@
-close all
+%close all
 clear all
 
-path = "/home/udg/git/EstChannel/mediciones/biurkoFranka/agc on/";
+path = "/home/udg/git/EstChannel/mediciones/biurkoFranka/agc off/";
 
-Fs = 38e6
-fid=fopen(path +"Fs38-Fr2170-bw28-wd10--1.dat",'rb');
-imp=fread(fid,'double');
+Fs = 38e6;
 
-path = "/home/udg/git/EstChannel/mediciones/biurkoFrankaNlos/agc on/";
+k =1;
 
-
-fid=fopen(path +"Fs38-Fr2170-bw28-wd10--1.dat",'rb');
-imp2=fread(fid,'double');
+for i=1:k
+    fid=fopen(path +"Fs38-Fr2170-bw28-wd10--"+i+".dat",'rb');
+    h(i,:)=fread(fid,'double');
+end
 
 %%%%%normalize
 if 1==1
-    imp = imp/ max(imp);
-    imp2 = imp2/ max(imp2);
+    for i=1:k
+        %h(i,:) = h(i,:)/max(h(i,:)) ;
+        [v, idx(i)] = max(h(i,:));
+
+    end
+end
+
+idxref = 5
+if 1==1
+    for i=1:k
+        h(i,:) =circshift(h(i,:),idxref-idx(i));
+    end
 end
 
 
-imp = imp(1:end);
-
-t = 0:1/Fs:length(imp)/Fs -1/Fs;
+t = 0:1/Fs:length(h(1,:))/Fs -1/Fs;
+leg=cell(1,k);
 
 figure
 hold on
 grid on
- stem(t,imp)
- stem(t,imp2)
-
+for i=1:k
+        stem(t,h(i,:)) 
+        leg{i} = sprintf('n = %i',i);
+end
 hold off
 
+legend(leg)
 %%%%%%% PDP
-pdp = xcorr(imp,imp);
-pdp = pdp((length(pdp)+1)/2:end);
+for i=1:k
+       pdp(i,:)=pdpCalc(h(i,:),Fs,1); 
+end
 
-figure
-stem(pdp)
+%%%%%%%%
+for i=1:k
+      [tmean(i),trms(i)]=paramDelay(pdp(i,:),Fs); 
+end
 
-
-%%%%%%% noise calc
-
-
-noise = pdp (100:250);
-
-figure 
-stem(noise)
-
-promedio = mean (noise)
-varianza = var(noise)
-Thd= promedio +3*varianza
-
-s = find(pdp > Thd); 
-delays = (s-1)/Fs
-
- 
-
-figure 
-stem(pdp(s))
-
-tmean =sum (delays .* pdp(s))/sum(pdp(s));
-tmeanNs=tmean/ 1e-9
-trms = sqrt (  (sum(pdp(s) .*delays.^2) / sum(pdp(s)) ) - tmean^2 );
-trmsNs = trms/1e-9
+tm = mean(tmean)
+tr = mean(trms)
 

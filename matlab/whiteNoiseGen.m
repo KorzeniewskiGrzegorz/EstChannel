@@ -22,7 +22,7 @@ N= Fs*wd ;
 
 for i=1: v
     w = zeros(1,floor(Fs*wd));
-    w(1,1:floor(Fs*wd)- floor(Fs*wd)*(1-R)) = randn(1,floor(Fs*wd)- floor(Fs*wd)*(1-R));
+    w(1,1) = randn;
 
 
     IData(1,(i-1)*N+1:i*N) = w; 

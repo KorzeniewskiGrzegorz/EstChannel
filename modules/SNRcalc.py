@@ -18,8 +18,10 @@ def SNRcalc(data,Fs,offId):
 	avgSigPwr = np.mean(np.square(signal))
 	avgNsPwr = np.mean(np.square(noise))
 
-	snr = 10*np.log10(avgSigPwr/avgNsPwr)
-
+	if (avgNsPwr != 0 and avgSigPwr!=0):
+		snr = 10*np.log10(avgSigPwr/avgNsPwr)
+	else:
+		snr = 1000000;
 	return snr
 
 

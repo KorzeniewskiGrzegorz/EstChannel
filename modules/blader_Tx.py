@@ -44,20 +44,12 @@ class top_block(gr.top_block):
         self.blocks_float_to_complex_0 = blocks.float_to_complex(1)
         self.blocks_file_source_0_0 = blocks.file_source(gr.sizeof_float*1, '/dev/shm/QPulse.dat', True)
         self.blocks_file_source_0 = blocks.file_source(gr.sizeof_float*1, '/dev/shm/IPulse.dat', True)
-        self.blocks_file_sink_0_0_0_0_0_0 = blocks.file_sink(gr.sizeof_float*1, '/dev/shm/ruidoR.dat', False)
-        self.blocks_file_sink_0_0_0_0_0_0.set_unbuffered(True)
-        self.blocks_file_sink_0_0_0_0_0 = blocks.file_sink(gr.sizeof_float*1, '/dev/shm/ruidoI.dat', False)
-        self.blocks_file_sink_0_0_0_0_0.set_unbuffered(True)
-        self.blocks_complex_to_float_0 = blocks.complex_to_float(1)
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.blocks_complex_to_float_0, 1), (self.blocks_file_sink_0_0_0_0_0, 0))
-        self.connect((self.blocks_complex_to_float_0, 0), (self.blocks_file_sink_0_0_0_0_0_0, 0))
         self.connect((self.blocks_file_source_0, 0), (self.blocks_float_to_complex_0, 0))
         self.connect((self.blocks_file_source_0_0, 0), (self.blocks_float_to_complex_0, 1))
-        self.connect((self.blocks_float_to_complex_0, 0), (self.blocks_complex_to_float_0, 0))
         self.connect((self.blocks_float_to_complex_0, 0), (self.osmosdr_sink_0, 0))
 
 

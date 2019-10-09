@@ -47,9 +47,6 @@ def server_work(s,name,Fs =20e6, Fr = 2400e6):
 	        	result_available.wait()
 
 
-	        	message = "sending tx data ..." 
-	        	conn.send(message.encode())
-	        	os.system("scp -i ~/.ssh/id_rsa.pub /dev/shm/ruido* "+name +"@"+str(addr[0])+":/dev/shm/")
 	        	message = "done" 
 	        	conn.send(message.encode())
 	        	print("Finish")
@@ -63,7 +60,7 @@ def server_work(s,name,Fs =20e6, Fr = 2400e6):
 
 
 def sounding_server():
-	#os.system("bladeRF-cli -d '*:serial=32a' -e \"set smb_mode input\"")
+	os.system("bladeRF-cli -d '*:serial=32a' -e \"set smb_mode input\"")
 
 	Fs = 20e6
 	Fr = 2400e6

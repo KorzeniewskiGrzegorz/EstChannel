@@ -27,10 +27,7 @@ def whiteNoiseGen(Fs,R =0.01,duration = 1,wd =0.0001, path ='/dev/shm/', plotMod
 	IData = IData / np.amax(IData) # !!!VERY IMPORTANT!!! necessary to avoid value saturation
 	IData = np.append (ISync, IData)
 
-	data_len =np.size(IData)
-
-
-	QData = np.zeros(data_len)
+	QData = np.zeros(np.size(IData))
 
 	if plotMode is 1:
 		t=np.linspace(0, duration+syncPulseLen, num=data_len)
@@ -42,6 +39,14 @@ def whiteNoiseGen(Fs,R =0.01,duration = 1,wd =0.0001, path ='/dev/shm/', plotMod
 
 	IData.astype('float32').tofile(path + 'IPulse.dat')
 	QData.astype('float32').tofile(path + 'QPulse.dat')
+
+	IData = np.append (IData, IData)
+	IData = IData[0:int(2*Fs)]
+	QData = np.zeros(np.size(IData))
+
+	IData.astype('float32').tofile(path + 'ruidoR.dat')
+	QData.astype('float32').tofile(path + 'ruidoI.dat')
+
 	print("whiteNoiseGen - Done")
 	print("Created files to path "+path)
 

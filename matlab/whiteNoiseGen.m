@@ -33,9 +33,8 @@ IData = IData/ max(IData);
 ISync = syncpulse(Fs,0.6);
 
 IData = [ISync, IData];
-IData = [IData,IData];
 
-%IData = IData/max(IData);
+
 
 data_len =length(IData);
 
@@ -51,11 +50,11 @@ t = 0:1/Fs:(data_len-1)/Fs;
 figure
 plot(t,IData,'b',t,QData,'r')
 
-f = fopen (path+"fdataR.dat", 'wb');
+f = fopen (path+"IPulse.dat", 'wb');
 fwrite (f, IData,'float');
 fclose (f);
 
-f = fopen (path+"fdataI.dat", 'wb');
+f = fopen (path+"QPulse.dat", 'wb');
 fwrite (f, QData,'float');
 fclose (f);
 

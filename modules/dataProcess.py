@@ -23,7 +23,7 @@ def dataProcess(Fs , #Sample freq
 		print "Q:{}".format(len(ruidoI))
 		print '!'*40
 	
-	ruidoC = ruidoR[0:int(2*Fs)] + 1j * ruidoI[0:int(2*Fs)]
+	ruidoC = ruidoR + 1j * ruidoI
 
 
 	del ruidoR,ruidoI

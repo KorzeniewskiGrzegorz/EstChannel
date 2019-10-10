@@ -12,7 +12,7 @@ def txSet(Fr,Fs,bw):
         ";tx config file=/dev/shm/tx.sc16q11 format=bin"+
         ";tx config repeat=2 delay=0"+
         ";tx start"+
-        ";tx\"")
+        ";tx wait\"")
 
 def blader_Tx(sr,fr,bw,e):
 
@@ -27,12 +27,9 @@ def blader_Tx(sr,fr,bw,e):
         print "%"*40
         print "\n"
         e.set()
-  	
+    start=time.time()  	
     txSet(fr,sr,bw)
-
-    start=time.time()
-    t = Timer(3, finish,[e])
-    t.start() # after 30 seconds, "hello, world" will be printed    
+    finish(e)
     
 
 if __name__ == '__main__':

@@ -66,10 +66,10 @@ def sounding_server():
 	Fr = 2400e6
 	path = '/dev/shm/'
 	
-	#ip = '192.168.10.4'
-	ip = '192.168.10.3'
-	#name = "udg"
-	name = "grzechu"
+	ip = '192.168.10.4'
+	#ip = '192.168.10.3'
+	name = "udg"
+	#name = "grzechu"
 
 	HOST ='192.168.10.6'              # Symbolic name meaning all available interfaces
 	#HOST = '127.0.0.1'   

@@ -3,6 +3,7 @@ import sys
 import numpy as np 
 import matplotlib.pyplot as plt
 from syncpulse import *
+from sc16q11convert import *
 
 
 def whiteNoiseGen(Fs,R =0.01,duration = 1,wd =0.0001, path ='/dev/shm/', plotMode =0):
@@ -35,10 +36,10 @@ def whiteNoiseGen(Fs,R =0.01,duration = 1,wd =0.0001, path ='/dev/shm/', plotMod
 		plt.plot(t,IData,'b',t,QData,'r')
 		plt.show()
 
+	s = IData +1j*QData
+	converted = sc16q11convert(s)
+	converted.astype('int16').tofile("/dev/shm/" + 'tx.bin')
 
-
-	IData.astype('float32').tofile(path + 'IPulse.dat')
-	QData.astype('float32').tofile(path + 'QPulse.dat')
 
 	IData = np.append (IData, IData)
 	IData = IData[0:int(2*Fs)]

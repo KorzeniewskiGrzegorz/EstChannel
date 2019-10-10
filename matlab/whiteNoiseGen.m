@@ -34,12 +34,9 @@ ISync = syncpulse(Fs,0.6);
 
 IData = [ISync, IData];
 
-
+%status = save_sc16q11("/dev/shm/sin.sc16q11",ISync)
 
 data_len =length(IData);
-
-%QData = [zeros(1,Fs/4) IData]; % 90 degree delay, quadrature signal
-%QData = QData(1,1:data_len);
 
 QData = zeros(1,data_len);
 
@@ -53,4 +50,18 @@ plot(t,IData,'b',t,QData,'r')
 
 CData= complex(IData,QData);
 
-status = save_sc16q11("/dev/shm/tx.sc16q11",CData)
+status = save_sc16q11("/dev/shm/tx.bin",CData)
+
+
+IData = [IData,IData];
+data_len =length(IData);
+
+QData = zeros(1,data_len);
+
+f = fopen (path+"ruidoR.dat", 'wb');
+fwrite (f, IData,'float');
+fclose (f);
+
+f = fopen (path+"ruidoI.dat", 'wb');
+fwrite (f, QData,'float');
+fclose (f);

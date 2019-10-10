@@ -25,7 +25,7 @@ def routine_remote(Fs,
 
 	HOST = '192.168.10.6'         # The remote host
 	#HOST = '127.0.0.1'   
-	PORT = 50007         # The same port as used by the server
+	PORT = 50008        # The same port as used by the server
 	#ip = '192.168.10.4'
 	ip = HOST
 	name = "pi"
@@ -43,7 +43,7 @@ def routine_remote(Fs,
 
 	
 	print("Sending generated noise ..."),
-	os.system("scp -i ~/.ssh/id_rsa.pub /dev/shm/IPulse.dat /dev/shm/QPulse.dat "+ name +"@"+ip+":/dev/shm/")
+	os.system("scp -i ~/.ssh/id_rsa.pub /dev/shm/tx.bin "+ name +"@"+ip+":/dev/shm/")
 	print("Done")
 
 	response =""

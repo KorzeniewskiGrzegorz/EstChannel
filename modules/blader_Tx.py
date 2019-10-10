@@ -9,7 +9,7 @@ def txSet(Fr,Fs,bw):
         "set frequency tx "+str(Fr)+
         ";set samplerate tx "+str(Fs)+
 	";set bandwidth tx "+str(bw)+
-        ";tx config file=/dev/shm/tx.sc16q11 format=bin"+
+        ";tx config file=/dev/shm/tx.bin"+
         ";tx config repeat=2 delay=0"+
         ";tx start"+
         ";tx wait\"")

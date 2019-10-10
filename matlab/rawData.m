@@ -26,8 +26,8 @@ bdataR=fread(fid,'float');
 fid=fopen(path+"fdataI.dat",'rb');
 bdataI=fread(fid,'float');
 
-bdataR = bdataR(1:0.6*Fs);
-bdataI = bdataI(1:0.6*Fs);
+bdataR = bdataR(1:2*Fs);
+bdataI = bdataI(1:2*Fs);
 
 lenDRaw=length(bdataR(:,1));
 

@@ -50,11 +50,7 @@ t = 0:1/Fs:(data_len-1)/Fs;
 figure
 plot(t,IData,'b',t,QData,'r')
 
-f = fopen (path+"IPulse.dat", 'wb');
-fwrite (f, IData,'float');
-fclose (f);
 
-f = fopen (path+"QPulse.dat", 'wb');
-fwrite (f, QData,'float');
-fclose (f);
+CData= complex(IData,QData);
 
+status = save_sc16q11("/dev/shm/tx.sc16q11",CData)

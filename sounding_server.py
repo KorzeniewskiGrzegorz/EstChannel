@@ -3,7 +3,7 @@ import socket
 
 import os
 import sys
-sys.path.insert(1, '/home/grzechu/git/EstChannel/modules')
+sys.path.insert(1, '/home/pi/git/EstChannel/modules')
 import threading
 from blader_Tx import blader_Tx
 
@@ -66,14 +66,14 @@ def sounding_server():
 	Fr = 2400e6
 	path = '/dev/shm/'
 	
-	ip = '192.168.10.4'
-	#ip = '192.168.10.3'
-	name = "udg"
-	#name = "grzechu"
+	#ip = '192.168.10.4'
+	ip = '192.168.10.3'
+	#name = "udg"
+	name = "grzechu"
 
-	HOST ='192.168.10.3'              # Symbolic name meaning all available interfaces
+	HOST ='192.168.10.6'              # Symbolic name meaning all available interfaces
 	#HOST = '127.0.0.1'   
-	PORT = 50007             # Arbitrary non-privileged port
+	PORT = 50008             # Arbitrary non-privileged port
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	s.bind((HOST, PORT))
 	s.listen(1)

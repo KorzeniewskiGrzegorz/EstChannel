@@ -4,20 +4,17 @@ import time
 from threading import Timer
 import threading
 
-
-def txWork(Fr,Fs,bw):
-	os.system("bladeRF-cli -d '*:serial=32a' -e \"set frequency tx"+Fr+"\"")
-	os.system("bladeRF-cli -d '*:serial=32a' -e \"set samplerate tx"+Fs+"\"")
-	os.system("bladeRF-cli -d '*:serial=32a' -e \"set bandwidth tx"+bw+"\"")
-	os.system("bladeRF-cli -d '*:serial=32a' -e \"tx config file=/dev/shm/tx.sc16q11 format=bin\"")
-	os.system("bladeRF-cli -d '*:serial=32a' -e \"tx config repeat=2 delay=0\"")
-	os.system("bladeRF-cli -d '*:serial=32a' -e \"tx start\"")
-
-
+def txSet(Fr,Fs,bw):
+	os.system("bladeRF-cli -d '*:serial=32a' -e \""+
+        "set frequency tx "+str(Fr)+
+        ";set samplerate tx "+str(Fs)+
+	";set bandwidth tx "+str(bw)+
+        ";tx config file=/dev/shm/tx.sc16q11 format=bin"+
+        ";tx config repeat=2 delay=0"+
+        ";tx start"+
+        ";tx\"")
 
 def blader_Tx(sr,fr,bw,e):
-
-    start=time.time()
 
     def finish(e):
         end = time.time()
@@ -29,16 +26,14 @@ def blader_Tx(sr,fr,bw,e):
         print("\tbandwidth: \t"+str(bw)+"Hz")
         print "%"*40
         print "\n"
-        tb.stop()
-        tb.wait()
         e.set()
   	
-    txWork(fr,sr,bw)
+    txSet(fr,sr,bw)
 
-
-    t = Timer(3, finish, [e])
+    start=time.time()
+    t = Timer(3, finish,[e])
     t.start() # after 30 seconds, "hello, world" will be printed    
-
+    
 
 if __name__ == '__main__':
     

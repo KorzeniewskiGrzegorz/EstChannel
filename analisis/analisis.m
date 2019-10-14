@@ -1,8 +1,8 @@
 close all
 clear all
 
-path = "/home/udg/git/EstChannel/mediciones/biurkoFranka/agc off/";
-
+path = "/home/udg/git/EstChannel/mediciones/korytarz_zew/2_omni/5m/";
+%path = "/home/udg/git/EstChannel/mediciones/biurkoFrankaNlos/agc off/";
 Fs = 38e6;
 
 k =5;

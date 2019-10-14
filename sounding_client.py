@@ -161,7 +161,7 @@ def updatePlot():
 	t=np.arange(0,l)*1e6/Fs
 
 	plt.clf()
-	plt.plot(t,Ryx)
+	plt.stem(t,Ryx)
 	plt.title('Estimated impulse response')
 	plt.ylabel('Amplitude')
 	plt.xlabel('Time [us]')

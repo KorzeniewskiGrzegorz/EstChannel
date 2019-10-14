@@ -2,9 +2,11 @@
 import sys
 import os
 if sys.version_info[0] < 3:
-    from Tkinter import *
+	from Tkinter import *
+	import tkFileDialog
 else:
 	from tkinter import *
+
 
 sys.path.insert(1, '/home/grzechu/git/EstChannel/modules')
 
@@ -179,9 +181,13 @@ def save(p):
 	print ("Impulse response saved in "+f)
 	updateEntry()
 
+
 def updateFolder(p):
 	global path
-	path = p
+	path =tkFileDialog.askdirectory(initialdir = "/home/udg/git/EstChannel/mediciones")
+
+	if not os.path.isdir(path):
+		os.makedirs(path)
 	updateEntry()
 
 

@@ -6,7 +6,7 @@ if sys.version_info[0] < 3:
 else:
 	from tkinter import *
 
-sys.path.insert(1, '/home/udg/git/EstChannel/modules')
+sys.path.insert(1, '/home/grzechu/git/EstChannel/modules')
 
 import numpy as np 
 import tkMessageBox

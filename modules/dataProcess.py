@@ -49,7 +49,7 @@ def dataProcess(Fs , #Sample freq
 
 	# signal calibration
 	offset = offcalc(dataC[0:int(Fs*0.6)],Fs) + offman #received samples offset due to hardware & software lag [samples];
-	snr = SNRcalc(dataC[0:int(Fs*0.6)],Fs,offset)
+	snr = SNRcalc(dataC[0:int(Fs*0.8)],Fs,offset)
 
 	print "SNR: {}".format(snr)
 

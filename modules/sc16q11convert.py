@@ -19,7 +19,7 @@ def sc16q11convert(signal):
 
 	assert(len(c_i) == len(c_q))
 	sig_len = 2 * len(c_i)
-	print sig_len
+
 	sc = np.zeros(sig_len)
 	sc[0:sig_len-1:2] = c_i
 	sc[1:sig_len  :2] = c_q

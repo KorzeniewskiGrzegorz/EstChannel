@@ -20,10 +20,10 @@ path="/dev/shm/";
 %fid=fopen(path+"ruidoI.dat",'rb');
 %ruidoI=fread(fid,'float');
 
-fid=fopen(path+"fdataR.dat",'rb');
+fid=fopen(path+"ruidoR.dat",'rb');
 bdataR=fread(fid,'float');
 
-fid=fopen(path+"fdataI.dat",'rb');
+fid=fopen(path+"ruidoI.dat",'rb');
 bdataI=fread(fid,'float');
 
 bdataR = bdataR(1:2*Fs);

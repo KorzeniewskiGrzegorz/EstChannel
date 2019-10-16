@@ -40,7 +40,7 @@ class top_block(gr.top_block):
         self.osmosdr_source_1.set_dc_offset_mode(0, 0)
         self.osmosdr_source_1.set_iq_balance_mode(0, 0)
         self.osmosdr_source_1.set_gain_mode(False, 0)
-        self.osmosdr_source_1.set_gain(30, 0)
+        self.osmosdr_source_1.set_gain(2, 0)
         self.osmosdr_source_1.set_if_gain(0, 0)
         self.osmosdr_source_1.set_bb_gain(0, 0)
         self.osmosdr_source_1.set_antenna('RX', 0)
@@ -112,9 +112,9 @@ def blader_Rx(sr,fr,bw,e,top_block_cls=top_block, options=None):
 
 if __name__ == '__main__':
     
-    Fs = 38e6
-    Fr = 2.17e9
-    bw = 28e6
+    Fs = 15e6
+    Fr = 2.3e9
+    bw = 15e6
 
     
 

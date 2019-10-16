@@ -1,13 +1,13 @@
 % data proccessing for white noise
 
-close all
+
 clear all
 format long
 
 %%%%%%%%%%%%%%%%%%%%%%%
 
 
-Fs=38e6; %Sample freq
+Fs=15e6; %Sample freq
 
 path="/dev/shm/";
 
@@ -20,10 +20,10 @@ path="/dev/shm/";
 %fid=fopen(path+"ruidoI.dat",'rb');
 %ruidoI=fread(fid,'float');
 
-fid=fopen(path+"ruidoR.dat",'rb');
+fid=fopen(path+"fdataR.dat",'rb');
 bdataR=fread(fid,'float');
 
-fid=fopen(path+"ruidoI.dat",'rb');
+fid=fopen(path+"fdataI.dat",'rb');
 bdataI=fread(fid,'float');
 
 bdataR = bdataR(1:2*Fs);

@@ -1,25 +1,24 @@
 close all
 clear all
 
-path = "/home/udg/git/EstChannel/mediciones/korytarz_zew/2_omni/5m/";
+path = "/home/udg/git/EstChannel/mediciones/korytarz_zew/";
 %path = "/home/udg/git/EstChannel/mediciones/biurkoFrankaNlos/agc off/";
 Fs = 38e6;
 
-k =5;
+k =1;
+i=1
+%for i=1:k
+    fid=fopen(path +"Fs38-Fr2170-bw28-wd10--"+"reves"+".dat",'rb');
+    h(i,:)=fread(fid,'double');
+%end
+
 
 for i=1:k
-    fid=fopen(path +"Fs38-Fr2170-bw28-wd10--"+i+".dat",'rb');
-    h(i,:)=fread(fid,'double');
+    %h(i,:) = h(i,:)/max(h(i,:)) ;
+    [v, idx(i)] = max(h(i,:));
+
 end
 
-%%%%%normalize
-if 1==1
-    for i=1:k
-        %h(i,:) = h(i,:)/max(h(i,:)) ;
-        [v, idx(i)] = max(h(i,:));
-
-    end
-end
 
 idxref = 5;
 if 1==1

@@ -25,7 +25,7 @@ def routine_remote(Fs,
 
 	HOST = '192.168.0.6'         # The remote host
 	#HOST = '127.0.0.1'   
-	PORT = 50008        # The same port as used by the server
+	PORT = 50009       # The same port as used by the server
 	#ip = '192.168.10.4'
 	ip = HOST
 	name = "pi"

@@ -53,13 +53,13 @@ def whiteNoiseGen(Fs,R =0.01,duration = 1,wd =0.0001, path ='/dev/shm/', plotMod
 
 def main():
 	
-	Fs = 20e6  # sample freq [Hz]
-	R = 0.01 # pulse ratio (0-1 range) for signal break
+	Fs = 38e6  # sample freq [Hz]
+	R = 1 # pulse ratio (0-1 range) for signal break
 	duration = 0.6 # signal duration [s]
 	wd = 0.0001
 	path="/dev/shm/"
 
-	whiteNoiseGen(Fs,R,plotMode = 1)
+	whiteNoiseGen(Fs,R,plotMode = 0)
 
 if __name__ == '__main__':
     main()

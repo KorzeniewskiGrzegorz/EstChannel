@@ -7,7 +7,7 @@ format long
 %%%%%%%%%%%%%%%%%%%%%%%
 
 
-Fs=15e6; %Sample freq
+Fs=38e6; %Sample freq
 
 path="/dev/shm/";
 
@@ -49,7 +49,8 @@ plot(0:1/Fs:lenDRaw/Fs-1/Fs,real(bdataC)+ imag(bdataC))%,0:1/Fs:lenDRaw/Fs-1/Fs,
 title('bad')
 xlabel('time [s]')
 
-
+offset = 0.57*Fs;
+snr = SNRcalc(bdataC (1:0.6*Fs),Fs,offset);
 
 %path="/home/udg/Documentos/8dbsnr/";
 

@@ -1,16 +1,15 @@
 close all
 clear all
 
-path = "/home/udg/git/EstChannel/mediciones/korytarz_zew/";
+path = "/home/udg/git/EstChannel/mediciones/korytarz_zew/maxPow/38m2omni/";
 %path = "/home/udg/git/EstChannel/mediciones/biurkoFrankaNlos/agc off/";
 Fs = 38e6;
 
-k =1;
-i=1
-%for i=1:k
-    fid=fopen(path +"Fs38-Fr2170-bw28-wd10--"+"reves"+".dat",'rb');
+k =4;
+for i=1:k
+    fid=fopen(path +"Fs38-Fr2300-bw28-wd10--"+i+".dat",'rb');
     h(i,:)=fread(fid,'double');
-%end
+end
 
 
 for i=1:k

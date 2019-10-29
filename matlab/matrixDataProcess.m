@@ -1,6 +1,6 @@
 % data proccessing for white noise
 
-
+close all
 clear all
 format long
 
@@ -82,29 +82,29 @@ v=floor(lenD/N); % number of pulses recorded
 
 y=zeros(N,v);
 
+
 for i=0:v-1 % Run cross correlation for v times
     
-
-    x=ruidoC(i*N+1:i*N+N,1); % TX
     y=dataC(i*N+1:i*N+N,1); % RX
+    ryy= y*y';
     
-    rxy=xcorr(x,conj(y)); % Cross correlation of the TX and RX conjugated data
-    Ryx=flip(rxy(1:N)); % Flip the correlation result and take the first N samples (Ryx(t) = Rxy(-t)
-    %hold on
-    %figure
-    %plot(x)
-    %plot(abs(y))
-    %hold off
-PA(:,i+1)=Ryx'; %Store the results in an array
+    Ryy= ryy(:,1);
+    
+    
+    
+PA(:,i+1)=Ryy; %Store the results in an array
 end
 clear Ryx; 
  
-Ryx=sum(PA')/v; % Average the values 
+ERyy=sum(PA')/v; % Average the values 
+
+%ERyy = ERyy/ max(ERyy);
+h = ERyy;
 
 
 
 figure;
-plot(0:1/Fs*1000000:N/Fs*1000000-1/Fs*1000000,abs(Ryx)); % Plot the estimated impulse response
+plot(0:1/Fs*1000000:N/Fs*1000000-1/Fs*1000000,abs(h)); % Plot the estimated impulse response
 
 title('Estimated Impulse Response');
 xlabel('time [us]')
@@ -122,9 +122,6 @@ grid;
 %[maximum,pico]=max(abs(Ryx));
 %pico=pico/Fs
 
-f = fopen ("NLOS.dat", 'ab');
-v = fwrite (f, abs(Ryx),'double');
-fclose (f);
 
 %&&&&&&&&&&&&&&&&&&&&&&
 

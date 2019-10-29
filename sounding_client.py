@@ -7,8 +7,10 @@ if sys.version_info[0] < 3:
 else:
 	from tkinter import *
 
+from os.path import expanduser
+home = expanduser("~")
 
-sys.path.insert(1, '/home/grzechu/git/EstChannel/modules')
+sys.path.insert(1, home+'/git/EstChannel/modules')
 
 import numpy as np 
 import tkMessageBox

@@ -40,6 +40,8 @@ def whiteNoiseGen(Fs,R =0.01,duration = 1,wd =0.0001, path ='/dev/shm/', plotMod
 	converted = sc16q11convert(s)
 	converted.astype('int16').tofile("/dev/shm/" + 'tx.bin')
 
+	IData.astype('float32').tofile(path + 'IPulse.dat')
+	QData.astype('float32').tofile(path + 'QPulse.dat')
 
 	IData = np.append (IData, IData)
 	IData = IData[0:int(2*Fs)]

@@ -8,7 +8,7 @@ format long
 
 
 Fs=10e6; %Sample freq
-wd=10; % window duration [us] for the correlation purpose
+wd=100; % window duration [us] for the correlation purpose
 path="/dev/shm/";
 
 
@@ -54,7 +54,7 @@ calibrationOffset = 0.6 *Fs ; % conversion from time to samples
 
 
 % signal calibration
-offset =offsetcalc(dataC (1:0.6*Fs),Fs); % received samples offset due to hardware & software lag [samples]floor(0.447352158*Fs)
+offset =offsetcalc(dataC (1:0.6*Fs),Fs)+3; % received samples offset due to hardware & software lag [samples]floor(0.447352158*Fs)
 
 %snr = SNRcalc(dataC (1:0.6*Fs),Fs,offset);
 dataC  = dataC (offset+1:offset +1*Fs);

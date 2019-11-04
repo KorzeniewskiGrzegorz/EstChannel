@@ -38,6 +38,7 @@ def server_work(s,name,Fs =20e6, Fr = 2400e6):
 				Fs = float(parms[0].split(":")[1])
 				Fr = float(parms[1].split(":")[1])
 				bw = float(parms[2].split(":")[1])
+				whiteNoiseGen(Fs)
 
 				result_available = threading.Event()
 

@@ -6,6 +6,7 @@ import sys
 sys.path.insert(1, '/home/pi/git/EstChannel/modules')
 import threading
 from blader_Tx import blader_Tx
+from whiteNoiseGen import whiteNoiseGen
 
 
 def server_work(s,name,Fs =20e6, Fr = 2400e6):

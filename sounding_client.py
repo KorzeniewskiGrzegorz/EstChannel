@@ -25,7 +25,7 @@ from routine_stat import *
 
 ############ GLOBAL ################################################
 Fs = 38e6
-Fr = 2170e6
+Fr = 2300e6
 Ryx = None
 path = "mediciones"
 count = 0

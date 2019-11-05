@@ -3,9 +3,10 @@ import socket
 
 import os
 import sys
-sys.path.insert(1, '/home/grzechu/git/EstChannel/modules')
+sys.path.insert(1, '/home/pi/git/EstChannel/modules')
 import threading
 from blader_Tx import blader_Tx
+from whiteNoiseGen import whiteNoiseGen
 
 
 def server_work(s,name,Fs =20e6, Fr = 2400e6):
@@ -38,6 +39,7 @@ def server_work(s,name,Fs =20e6, Fr = 2400e6):
 				Fs = float(parms[0].split(":")[1])
 				Fr = float(parms[1].split(":")[1])
 				bw = float(parms[2].split(":")[1])
+				whiteNoiseGen(Fs)
 
 				result_available = threading.Event()
 
@@ -47,9 +49,6 @@ def server_work(s,name,Fs =20e6, Fr = 2400e6):
 	        	result_available.wait()
 
 
-	        	message = "sending tx data ..." 
-	        	conn.send(message.encode())
-	        	os.system("scp -i ~/.ssh/id_rsa.pub /dev/shm/ruido* "+name +"@"+str(addr[0])+":/dev/shm/")
 	        	message = "done" 
 	        	conn.send(message.encode())
 	        	print("Finish")
@@ -63,7 +62,7 @@ def server_work(s,name,Fs =20e6, Fr = 2400e6):
 
 
 def sounding_server():
-	#os.system("bladeRF-cli -d '*:serial=32a' -e \"set smb_mode input\"")
+	os.system("bladeRF-cli -d '*:serial=32a' -e \"set smb_mode input\"")
 
 	Fs = 20e6
 	Fr = 2400e6
@@ -74,9 +73,9 @@ def sounding_server():
 	name = "udg"
 	#name = "grzechu"
 
-	HOST ='192.168.10.3'              # Symbolic name meaning all available interfaces
+	HOST ='192.168.10.6'              # Symbolic name meaning all available interfaces
 	#HOST = '127.0.0.1'   
-	PORT = 50007             # Arbitrary non-privileged port
+	PORT = 50008             # Arbitrary non-privileged port
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	s.bind((HOST, PORT))
 	s.listen(1)

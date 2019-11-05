@@ -1,6 +1,6 @@
 % data proccessing for white noise
 
-close all
+
 clear all
 format long
 
@@ -26,8 +26,8 @@ bdataR=fread(fid,'float');
 fid=fopen(path+"fdataI.dat",'rb');
 bdataI=fread(fid,'float');
 
-bdataR = bdataR(1:0.6*Fs);
-bdataI = bdataI(1:0.6*Fs);
+bdataR = bdataR(1:2*Fs);
+bdataI = bdataI(1:2*Fs);
 
 lenDRaw=length(bdataR(:,1));
 
@@ -49,7 +49,8 @@ plot(0:1/Fs:lenDRaw/Fs-1/Fs,real(bdataC)+ imag(bdataC))%,0:1/Fs:lenDRaw/Fs-1/Fs,
 title('bad')
 xlabel('time [s]')
 
-
+offset = 0.57*Fs;
+snr = SNRcalc(bdataC (1:0.6*Fs),Fs,offset);
 
 %path="/home/udg/Documentos/8dbsnr/";
 

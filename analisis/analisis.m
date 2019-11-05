@@ -1,27 +1,25 @@
-%close all
+close all
 clear all
 
-path = "/home/udg/git/EstChannel/mediciones/biurkoFranka/agc off/";
-
+path = "/home/udg/git/EstChannel/mediciones/porownanieMetod/matrix/col/";
+%path = "/home/udg/git/EstChannel/mediciones/biurkoFrankaNlos/agc off/";
 Fs = 38e6;
 
-k =1;
-
+k =2;
 for i=1:k
-    fid=fopen(path +"Fs38-Fr2170-bw28-wd10--"+i+".dat",'rb');
+    fid=fopen(path +"Fs38-Fr2300-bw28-wd10--"+i+".dat",'rb');
     h(i,:)=fread(fid,'double');
 end
 
-%%%%%normalize
-if 1==1
-    for i=1:k
-        %h(i,:) = h(i,:)/max(h(i,:)) ;
-        [v, idx(i)] = max(h(i,:));
 
-    end
+for i=1:k
+    %h(i,:) = h(i,:)/max(h(i,:)) ;
+    [v, idx(i)] = max(h(i,:));
+
 end
 
-idxref = 5
+
+idxref = 5;
 if 1==1
     for i=1:k
         h(i,:) =circshift(h(i,:),idxref-idx(i));
@@ -49,9 +47,17 @@ end
 
 %%%%%%%%
 for i=1:k
-      [tmean(i),trms(i)]=paramDelay(pdp(i,:),Fs); 
+      [tmeanp(i),trmsp(i),tmaxp(i),b_50p(i)]=paramDelay(pdp(i,:),Fs); 
 end
 
-tm = mean(tmean)
-tr = mean(trms)
+tmeanNs = mean(tmeanp)
+trmsNs  = mean(trmsp)
+tmaxNs  = mean(tmaxp)
+b_50    = mean(b_50p)
 
+
+N=length(h(1,:));
+X=fftshift(fft(h(1,:)));
+figure;
+plot(Fs*(-N/2:N/2-1)/N,abs(X));
+grid on;

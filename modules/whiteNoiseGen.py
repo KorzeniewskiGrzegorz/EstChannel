@@ -3,6 +3,7 @@ import sys
 import numpy as np 
 import matplotlib.pyplot as plt
 from syncpulse import *
+from sc16q11convert import *
 
 
 def whiteNoiseGen(Fs,R =0.01,duration = 1,wd =0.0001, path ='/dev/shm/', plotMode =0):
@@ -27,10 +28,7 @@ def whiteNoiseGen(Fs,R =0.01,duration = 1,wd =0.0001, path ='/dev/shm/', plotMod
 	IData = IData / np.amax(IData) # !!!VERY IMPORTANT!!! necessary to avoid value saturation
 	IData = np.append (ISync, IData)
 
-	data_len =np.size(IData)
-
-
-	QData = np.zeros(data_len)
+	QData = np.zeros(np.size(IData))
 
 	if plotMode is 1:
 		t=np.linspace(0, duration+syncPulseLen, num=data_len)
@@ -38,22 +36,32 @@ def whiteNoiseGen(Fs,R =0.01,duration = 1,wd =0.0001, path ='/dev/shm/', plotMod
 		plt.plot(t,IData,'b',t,QData,'r')
 		plt.show()
 
-
+	s = IData +1j*QData
+	converted = sc16q11convert(s)
+	converted.astype('int16').tofile("/dev/shm/" + 'tx.bin')
 
 	IData.astype('float32').tofile(path + 'IPulse.dat')
 	QData.astype('float32').tofile(path + 'QPulse.dat')
+
+	IData = np.append (IData, IData)
+	IData = IData[0:int(2*Fs)]
+	QData = np.zeros(np.size(IData))
+
+	IData.astype('float32').tofile(path + 'ruidoR.dat')
+	QData.astype('float32').tofile(path + 'ruidoI.dat')
+
 	print("whiteNoiseGen - Done")
 	print("Created files to path "+path)
 
 def main():
 	
-	Fs = 20e6  # sample freq [Hz]
+	Fs = 38e6  # sample freq [Hz]
 	R = 0.01 # pulse ratio (0-1 range) for signal break
-	duration = 0.6 # signal duration [s]
+	duration = 1 # signal duration [s]
 	wd = 0.0001
 	path="/dev/shm/"
 
-	whiteNoiseGen(Fs,R,plotMode = 1)
+	whiteNoiseGen(Fs,R,plotMode = 0)
 
 if __name__ == '__main__':
     main()

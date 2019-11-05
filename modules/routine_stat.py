@@ -7,6 +7,7 @@ import traceback
 import threading
 from whiteNoiseGen import whiteNoiseGen
 from dataProcess import dataProcess
+from matrixDataProcess import matrixDataProcess
 from blader_stat import blader_stat
 from dcFilter import dcFilter 
 from scipy.ndimage.interpolation import shift
@@ -44,7 +45,7 @@ def routine_stat(Fs,
 
 	
 	try:
-		Ryx = dataProcess(Fs,wd,path,plotMode)
+		Ryx = matrixDataProcess(Fs,wd,path,plotMode)
 		return Ryx
 	except ValueError as err:
 		print "Exception in user code:"

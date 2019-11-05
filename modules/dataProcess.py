@@ -24,7 +24,7 @@ def dataProcess(Fs , #Sample freq
 		print "Q:{}".format(len(ruidoI))
 		print '!'*40
 	
-	ruidoC = ruidoR[0:int(2*Fs)] + 1j * ruidoI[0:int(2*Fs)]
+	ruidoC = ruidoR + 1j * ruidoI
 
 
 	del ruidoR,ruidoI
@@ -49,9 +49,9 @@ def dataProcess(Fs , #Sample freq
 	calibrationOffset = 0.6 *Fs  #conversion from time to samples
 
 	# signal calibration
-	offset = int(calibrationOffset)#offcalc(dataC[0:int(Fs*0.6)],Fs) + offman #received samples offset due to hardware & software lag [samples];
-	
-	snr=-10#snr = SNRcalc(dataC[0:int(Fs*0.6)],Fs,offset)
+
+	offset = offcalc(dataC[0:int(Fs*0.6)],Fs) + offman #received samples offset due to hardware & software lag [samples];
+	snr = SNRcalc(dataC[0:int(Fs*0.8)],Fs,offset)
 
 	print "SNR: {}".format(snr)
 
@@ -66,7 +66,7 @@ def dataProcess(Fs , #Sample freq
 	print end-start
 
 	if plotMode :
-		plt.plot(np.abs(Ryx))
+		plt.stem(np.abs(Ryx))
 		plt.show()
 	else:
 		return Ryx

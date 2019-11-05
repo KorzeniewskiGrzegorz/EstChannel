@@ -1,13 +1,13 @@
 % data proccessing for white noise
 
-close all
+
 clear all
 format long
 
 %%%%%%%%%%%%%%%%%%%%%%%
 
 
-Fs=38e6; %Sample freq
+Fs=10e6; %Sample freq
 wd=10; % window duration [us] for the correlation purpose
 path="/dev/shm/";
 
@@ -56,7 +56,7 @@ calibrationOffset = 0.6 *Fs ; % conversion from time to samples
 % signal calibration
 offset =offsetcalc(dataC (1:0.6*Fs),Fs); % received samples offset due to hardware & software lag [samples]floor(0.447352158*Fs)
 
-snr = SNRcalc(dataC (1:0.6*Fs),Fs,offset);
+%snr = SNRcalc(dataC (1:0.6*Fs),Fs,offset);
 dataC  = dataC (offset+1:offset +1*Fs);
 ruidoC = ruidoC(calibrationOffset+1:calibrationOffset+1*Fs);
 

@@ -2,11 +2,15 @@
 import sys
 import os
 if sys.version_info[0] < 3:
-    from Tkinter import *
+	from Tkinter import *
+	import tkFileDialog
 else:
 	from tkinter import *
 
-sys.path.insert(1, '/home/udg/git/EstChannel/modules')
+from os.path import expanduser
+home = expanduser("~")
+
+sys.path.insert(1, home+'/git/EstChannel/modules')
 
 import numpy as np 
 import tkMessageBox
@@ -21,7 +25,7 @@ from routine_stat import *
 
 ############ GLOBAL ################################################
 Fs = 38e6
-Fr = 2170e6
+Fr = 2300e6
 Ryx = None
 path = "mediciones"
 count = 0
@@ -161,7 +165,7 @@ def updatePlot():
 	t=np.arange(0,l)*1e6/Fs
 
 	plt.clf()
-	plt.plot(t,Ryx)
+	plt.stem(t,Ryx)
 	plt.title('Estimated impulse response')
 	plt.ylabel('Amplitude')
 	plt.xlabel('Time [us]')
@@ -179,9 +183,13 @@ def save(p):
 	print ("Impulse response saved in "+f)
 	updateEntry()
 
+
 def updateFolder(p):
 	global path
-	path = p
+	path =tkFileDialog.askdirectory(initialdir = "/home/udg/git/EstChannel/mediciones")
+
+	if not os.path.isdir(path):
+		os.makedirs(path)
 	updateEntry()
 
 

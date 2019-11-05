@@ -8,6 +8,8 @@ import traceback
 import threading
 from whiteNoiseGen import whiteNoiseGen
 from dataProcess import dataProcess
+from matrixDataProcess import matrixDataProcess
+from matrixEstDataProcess import matrixEstDataProcess
 from blader_Rx import *
 from dcFilter import dcFilter 
 from scipy.ndimage.interpolation import shift
@@ -23,12 +25,12 @@ def routine_remote(Fs,
 
 	#os.system("bladeRF-cli -d '*:serial=179' -e \"set smb_mode input\"")
 
-	HOST = '192.168.10.3'         # The remote host
-	#HOST = '127.0.0.1'   
-	PORT = 50007         # The same port as used by the server
+	#HOST = '192.168.0.6'         # The remote host
+	HOST = '192.168.10.6'   
+	PORT = 50008       # The same port as used by the server
 	#ip = '192.168.10.4'
 	ip = HOST
-	name = "grzechu"
+	name = "pi"
 	#name = "udg"
 
 	conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -37,13 +39,13 @@ def routine_remote(Fs,
 	print '<'*80 
 	print '<'*80 
 	print "INIT"
-	whiteNoiseGen(Fs)
+	#whiteNoiseGen(Fs)
 
 	######################
 
 	
 	print("Sending generated noise ..."),
-	os.system("scp -i ~/.ssh/id_rsa.pub /dev/shm/IPulse.dat /dev/shm/QPulse.dat "+ name +"@"+ip+":/dev/shm/")
+	#os.system("scp -i ~/.ssh/id_rsa.pub /dev/shm/tx.bin "+ name +"@"+ip+":/dev/shm/")
 	print("Done")
 
 	response =""

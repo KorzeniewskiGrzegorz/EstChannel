@@ -1,11 +1,11 @@
 close all
 clear all
 
-path = "/home/udg/git/EstChannel/mediciones/korytarz_zew/maxPow/38m2omni/";
+path = "/home/udg/git/EstChannel/mediciones/porownanieMetod/matrix/col/";
 %path = "/home/udg/git/EstChannel/mediciones/biurkoFrankaNlos/agc off/";
 Fs = 38e6;
 
-k =4;
+k =2;
 for i=1:k
     fid=fopen(path +"Fs38-Fr2300-bw28-wd10--"+i+".dat",'rb');
     h(i,:)=fread(fid,'double');

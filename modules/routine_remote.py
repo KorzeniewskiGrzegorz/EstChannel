@@ -9,6 +9,7 @@ import threading
 from whiteNoiseGen import whiteNoiseGen
 from dataProcess import dataProcess
 from matrixDataProcess import matrixDataProcess
+from matrixEstDataProcess import matrixEstDataProcess
 from blader_Rx import *
 from dcFilter import dcFilter 
 from scipy.ndimage.interpolation import shift
@@ -24,9 +25,9 @@ def routine_remote(Fs,
 
 	#os.system("bladeRF-cli -d '*:serial=179' -e \"set smb_mode input\"")
 
-	HOST = '192.168.0.6'         # The remote host
-	#HOST = '127.0.0.1'   
-	PORT = 50009       # The same port as used by the server
+	#HOST = '192.168.0.6'         # The remote host
+	HOST = '192.168.10.6'   
+	PORT = 50008       # The same port as used by the server
 	#ip = '192.168.10.4'
 	ip = HOST
 	name = "pi"
@@ -79,7 +80,7 @@ def routine_remote(Fs,
 
 	
 	try:
-		Ryx = matrixDataProcess(Fs,wd,path,plotMode)
+		Ryx = dataProcess(Fs,wd,path,plotMode)
 		return Ryx
 	except ValueError as err:
 		print "Exception in user code:"

@@ -7,7 +7,7 @@ from SNRcalc import SNRcalc
 
 
 #%%%%%%%%%5%%%%%%%%%%%%%
-def matrixDataProcess(Fs , #Sample freq
+def matrixEstDataProcess(Fs , #Sample freq
 	wd = 100,
 	path = "/dev/shm/",
 	offman = 0,
@@ -41,7 +41,7 @@ def matrixDataProcess(Fs , #Sample freq
 	dataC  = dataC [ offset : int(offset+Fs)  ]
 
 	lenD=len(dataC)
-
+	ERyy = 0
 
 	if 1 ==1 :
 		N=int( wd*Fs/1000000) # conversion of window duration from miliseconds to samples
@@ -56,14 +56,13 @@ def matrixDataProcess(Fs , #Sample freq
 			y = y.transpose();
 
 			ryy= y.dot(y.getH())# Cross correlation of the TX and RX conjugated data
-			Ryy= ryy[:,1];
+			
+			if i>0:
+				ERyy= (i*ERyy + ryy)/(i+1);
 
- 			PA[:,[i]]=Ryy #Store the results in an array
 
-		ERyy = PA.mean(axis=1) # Average the values 
 
-		
-		h= np.abs(ERyy)
+		h= np.abs(ERyy[:,1])
 
 	else:
 		h = 0
@@ -80,7 +79,7 @@ def main():
 	wd = 10; # window duration [us] for the correlation purpose
 	path = "/dev/shm/"
 
-	matrixDataProcess(Fs,wd,path,plotMode = True)
+	matrixEstDataProcess(Fs,wd,path,plotMode = True)
 
 
 if __name__ == '__main__':

@@ -7,26 +7,11 @@ format long
 %%%%%%%%%%%%%%%%%%%%%%%
 
 
-Fs=10e6; %Sample freq
-wd=100; % window duration [us] for the correlation purpose
+Fs=38e6; %Sample freq
+wd=10; % window duration [us] for the correlation purpose
 path="/dev/shm/";
 
 
-%%%%%%%%%5%%%%%%%%%%%%%
-fid=fopen(path+"ruidoR.dat",'rb');
-ruidoR=fread(fid,'float');
-
-fid=fopen(path+"ruidoI.dat",'rb');
-ruidoI=fread(fid,'float');
-
-ruidoR = ruidoR(1:2*Fs);
-ruidoI = ruidoI(1:2*Fs);
-ruidoC=complex(ruidoR,ruidoI);  %transmitted complex data
-
-clear ruidoR
-clear ruidoI
-
-lenRRaw=length(ruidoC(:,1));
 
 fid=fopen(path+"fdataR.dat",'rb');
 dataR=fread(fid,'float');
@@ -54,26 +39,21 @@ calibrationOffset = 0.6 *Fs ; % conversion from time to samples
 
 
 % signal calibration
-offset =offsetcalc(dataC (1:0.6*Fs),Fs)+3; % received samples offset due to hardware & software lag [samples]floor(0.447352158*Fs)
+offset =offsetcalc(dataC (1:0.6*Fs),Fs); % received samples offset due to hardware & software lag [samples]floor(0.447352158*Fs)
 
 %snr = SNRcalc(dataC (1:0.6*Fs),Fs,offset);
 dataC  = dataC (offset+1:offset +1*Fs);
-ruidoC = ruidoC(calibrationOffset+1:calibrationOffset+1*Fs);
 
-lenR=length(ruidoC(:,1));
+
+
 lenD=length(dataC(:,1));
 
 %calibrated data plotting
 
-figure
-subplot(2,1,1)
-plot(0:1/Fs:lenR/Fs-1/Fs,real(ruidoC),0:1/Fs:lenR/Fs-1/Fs,imag(ruidoC))
-title('Tx calibrated')
-xlabel('time [s]')
-subplot(2,1,2)
-plot(0:1/Fs:lenD/Fs-1/Fs,real(dataC),0:1/Fs:lenD/Fs-1/Fs,imag(dataC))
-title('Rx with offset')
-xlabel('time [s]')
+%figure
+%plot(0:1/Fs:lenD/Fs-1/Fs,real(dataC),0:1/Fs:lenD/Fs-1/Fs,imag(dataC))
+%title('Rx with offset')
+%xlabel('time [s]')
 
 
 N=wd*Fs/1000000 ; % conversion of window duration from miliseconds to samples
@@ -82,29 +62,26 @@ v=floor(lenD/N); % number of pulses recorded
 
 y=zeros(N,v);
 
-
-for i=0:v-1 % Run cross correlation for v times
+eRyy=0;
+for i=0:v-1 %calculate autocorrelation matrix for v times
     
     y=dataC(i*N+1:i*N+N,1); % RX
     ryy= y*y';
-    
-    Ryy= ryy(:,1);
-    
-    
-    
-PA(:,i+1)=Ryy; %Store the results in an array
+    if(i>0)
+        eRyy = (i*eRyy + ryy)/(i+1);
+    end
 end
-clear Ryx; 
- 
-ERyy=sum(PA')/v; % Average the values 
 
+ 
+%ERyy=sum(PA')/v; % Average the values 
+Ryy= eRyy(:,1);
 %ERyy = ERyy/ max(ERyy);
-h = ERyy;
+h = Ryy;
 
 
 
 figure;
-plot(0:1/Fs*1000000:N/Fs*1000000-1/Fs*1000000,abs(h)); % Plot the estimated impulse response
+stem(0:1/Fs*1000000:N/Fs*1000000-1/Fs*1000000,abs(h)); % Plot the estimated impulse response
 
 title('Estimated Impulse Response');
 xlabel('time [us]')

@@ -23,9 +23,9 @@ def routine_remote(Fs,
 
 	#os.system("bladeRF-cli -d '*:serial=179' -e \"set smb_mode input\"")
 
-	HOST = '192.168.0.6'         # The remote host
+	HOST = '192.168.10.6'         # The remote host
 	#HOST = '127.0.0.1'   
-	PORT = 50009       # The same port as used by the server
+	PORT = 50008       # The same port as used by the server
 	#ip = '192.168.10.4'
 	ip = HOST
 	name = "pi"

@@ -1,31 +1,37 @@
 close all
 clear all
 
-path = "/home/udg/git/EstChannel/mediciones/korytarz_zew/";
+path = "/home/udg/git/EstChannel/mediciones/testZapisu/";
 %path = "/home/udg/git/EstChannel/mediciones/biurkoFrankaNlos/agc off/";
 Fs = 38e6;
 
 k =1;
-i=1
+i=1;
 %for i=1:k
-    fid=fopen(path +"Fs38-Fr2170-bw28-wd10--"+"reves"+".dat",'rb');
-    h(i,:)=fread(fid,'double');
+    fid=fopen(path +"Fs38-Fr2300-bw28-wd10--2_i"+".dat",'rb');
+    hreal(i,:)=fread(fid,'double');
+    
+    fid=fopen(path +"Fs38-Fr2300-bw28-wd10--2_q"+".dat",'rb');
+    himag(i,:)=fread(fid,'double');
 %end
+
+h(i,:)=abs(complex(hreal(i,:),himag(i,:)));
+
 
 
 for i=1:k
-    %h(i,:) = h(i,:)/max(h(i,:)) ;
+    h(i,:) = h(i,:)/max(h(i,:)) ;
     [v, idx(i)] = max(h(i,:));
 
 end
 
 
-idxref = 5;
-if 1==1
-    for i=1:k
-        h(i,:) =circshift(h(i,:),idxref-idx(i));
-    end
-end
+%idxref = 5;
+%if 1==1
+%    for i=1:k
+%       h(i,:) =circshift(h(i,:),idxref-idx(i));
+%    end
+%end
 
 
 t = 0:1/Fs:length(h(1,:))/Fs -1/Fs;

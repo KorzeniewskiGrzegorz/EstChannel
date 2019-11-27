@@ -13,7 +13,7 @@ def SNRcalc(data,Fs,offId):
 
 	signal = data[ int(offId -0.16*Fs):int(offId -0.14*Fs)]
 
-	noise = data[int(offId +0.04*Fs): int(offId +0.06*Fs)]
+	noise = data[int(offId -0.06*Fs): int(offId -0.04*Fs)]
 
 	avgSigPwr = np.mean(np.square(signal))
 	avgNsPwr = np.mean(np.square(noise))

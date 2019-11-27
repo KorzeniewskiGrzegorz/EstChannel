@@ -78,7 +78,7 @@ def dataProcess(Fs , #Sample freq
 			PA[i] = Ryx
 
 		Ryx = PA.mean(axis=0)
-		Ryx = np.abs(Ryx)
+		#Ryx = np.abs(Ryx)
 	else:
 		Ryx = 0
 

@@ -7,8 +7,10 @@ if sys.version_info[0] < 3:
 else:
 	from tkinter import *
 
+from os.path import expanduser
+home = expanduser("~")
 
-sys.path.insert(1, '/home/grzechu/git/EstChannel/modules')
+sys.path.insert(1, home+'/git/EstChannel/modules')
 
 import numpy as np 
 import tkMessageBox
@@ -23,7 +25,7 @@ from routine_stat import *
 
 ############ GLOBAL ################################################
 Fs = 38e6
-Fr = 2170e6
+Fr = 2300e6
 Ryx = None
 path = "mediciones"
 count = 0
@@ -130,7 +132,7 @@ def searchFileIter(pathDir,fileName):
 	number =None
 	for i in range(1,1000):
 		
-		if os.path.isfile(pathDir+"/"+fileName+str(i)+'.dat'):
+		if os.path.isfile(pathDir+"/"+fileName+str(i)+'_i.dat'):
 			pass
 		else:
 			number =  i
@@ -163,7 +165,7 @@ def updatePlot():
 	t=np.arange(0,l)*1e6/Fs
 
 	plt.clf()
-	plt.stem(t,Ryx)
+	plt.stem(t,np.abs(Ryx))
 	plt.title('Estimated impulse response')
 	plt.ylabel('Amplitude')
 	plt.xlabel('Time [us]')
@@ -177,7 +179,8 @@ def save(p):
 	global Ryx
 
 	f = path+"/"+p
-	Ryx.tofile(path+"/"+p)
+	Ryx.real.tofile(path+"/"+p.replace('.dat','_i.dat'))
+	Ryx.imag.tofile(path+"/"+p.replace('.dat','_q.dat'))
 	print ("Impulse response saved in "+f)
 	updateEntry()
 

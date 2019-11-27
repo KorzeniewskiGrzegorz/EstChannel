@@ -80,7 +80,7 @@ def routine_remote(Fs,
 
 	
 	try:
-		Ryx = dataProcess(Fs,wd,path,plotMode)
+		Ryx = matrixDataProcess(Fs,wd,path,plotMode)
 		return Ryx
 	except ValueError as err:
 		print "Exception in user code:"

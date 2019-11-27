@@ -1,7 +1,7 @@
 close all
 clear all
 
-path = "/home/udg/git/EstChannel/mediciones/porownanieMetod/matrix/col/";
+path = "/home/udg/git/EstChannel/mediciones/porownanieMetod/xcorr/";
 %path = "/home/udg/git/EstChannel/mediciones/biurkoFrankaNlos/agc off/";
 Fs = 38e6;
 

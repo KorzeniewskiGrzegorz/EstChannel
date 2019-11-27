@@ -83,7 +83,7 @@ def dataProcess(Fs , #Sample freq
 		Ryx = 0
 
 	if plotMode :
-		plt.stem(np.abs(Ryx))
+		plt.stem(np.abs(np.square(Ryx)))
 		plt.show()
 	else:
 		return Ryx

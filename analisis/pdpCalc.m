@@ -1,26 +1,54 @@
-function [pdp] = pdpCalc(h,Fs,plotMode,i)
+function [pdp] = pdpCalc(h,Fs,plotMode,k,normalize,noiseThr)
 
-h=h';
-ryy= h*h';
-
-
- 
-%ERyy=sum(PA')/v; % Average the values 
-%pdp= 
-%ERyy = ERyy/ max(ERyy);
-
-pdp = diag(ryy);
-
-%pdp = pdp/max(pdp);
-
-if plotMode ==1
+    %%% PDP calculation of each realization
+    for i=1:k
+        hc=h(i,:)';
+        ryy= hc*hc';
+        pdpc(i,:) = diag(ryy);
+        if normalize == 1
+            pdpc(i,:) = pdpc(i,:)/max(pdpc(i,:));
+        end
+        
+    end
     
-    t = 0:1/Fs:length(pdp)/Fs - 1/Fs;
-    t = t*1e9;
-    figure
-    stem(t,pdp)
-    title("pdp n="'+i)
-end
+    %%%%%% data align to first sample above threshold
+    for i=1:k
+        idx(i) = find(pdpc(i,:) > noiseThr , 1); 
+    end
+
+
+    idxref = 10; % fixed number, distance depended
+    if 1==1
+       for i=1:k
+           if idx(i)>idxref
+               pdpc(i,:) = [pdpc(i,idx(i)-idxref+1:end) zeros(1,idx(i)-idxref)];
+           else
+               pdpc(i,:) = [zeros(1,idxref-idx(i)) pdpc(i,1:end-(idxref-idx(i)) )];
+           end
+       end
+    end
+
+  
+    if plotMode == 1 % plot mode for each pdp before mean
+          t = 0:1/Fs:length(pdpc(1,:))/Fs -1/Fs;
+        leg=cell(1,k);
+
+        figure
+        hold on
+        grid on
+        for i=1:k
+                stem(t,pdpc(i,:))
+                title('PDP ')
+                leg{i} = sprintf('n = %i',i);
+        end
+        hold off
+        legend(leg)
+    end
+    
+%%%% estimating pdp - mean
+pdp = mean(pdpc);
+
+pdp = pdp(1:50); % pdp truncate
 
 end
 

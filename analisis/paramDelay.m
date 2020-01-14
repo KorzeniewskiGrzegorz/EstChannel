@@ -1,4 +1,4 @@
-function [tmeanNs,trmsNs,tmaxNs,b_50] = paramDelay(pdp,Fs,i)
+function [tmeanNs,trmsNs,tmaxNs,b_50] = paramDelay(pdp,Fs,i,noiseThreshold)
 format long
 
 l = length(pdp);
@@ -8,7 +8,7 @@ noise = pdp (floor(4*l/5):end);
 promedio = mean (noise);
 varianza = var(noise);
 maks=max(noise);
-Thd=0.01;
+Thd=noiseThreshold;
 
 
 s = find(pdp > Thd); 

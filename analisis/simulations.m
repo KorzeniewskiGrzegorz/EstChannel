@@ -17,7 +17,7 @@ for i=1:k
 end
 
 
-%%%%%%% PDP
+%%%%%%% PDP measured
 
 pdp=pdpCalc(hc,Fs,1,k,1,noiseThr); 
 
@@ -30,9 +30,6 @@ grid on
 stem(t,pdp)
 title('PDP')
 
-[tmean,trms,tmax,b_50]=paramDelay(pdp,Fs,1,noiseThr);
+%%%%%%% PDP simulated
 
-tmean
-trms 
-tmax
-b_50    
+

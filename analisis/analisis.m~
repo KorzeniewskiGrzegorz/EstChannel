@@ -2,9 +2,10 @@ close all
 clear all
 
 path = "/home/udg/git/EstChannel/mediciones/ed_mecanica_abierto/17-dec-19/v1/";
+%path = "/home/udg/git/EstChannel/mediciones/biurkoFrankaNlos/agc off/";
 Fs = 38e6;
 
-k =4;
+k =5;
 i=1;
 for i=1:k
     fid=fopen(path +"Fs38-Fr2300-bw28-wd10--"+i+"_i"+".dat",'rb');
@@ -21,7 +22,7 @@ end
 
 
 for i=1:k
-    hc(i,:) = hc(i,:)/max(hc(i,:)) ;
+    %h(i,:) = h(i,:)/max(h(i,:)) ;
     [v, idx(i)] = max(hc(i,:));
 
 end

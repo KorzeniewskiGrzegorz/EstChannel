@@ -11,7 +11,7 @@ ryy= h*h';
 
 pdp = diag(ryy);
 
-%pdp = pdp/max(pdp);
+pdp = pdp/max(pdp);
 
 if plotMode ==1
     
@@ -19,7 +19,8 @@ if plotMode ==1
     t = t*1e9;
     figure
     stem(t,pdp)
-    title("pdp n="'+i)
+    str=i;
+    title("pdp n="'+r)
 end
 
 end

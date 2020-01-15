@@ -1,5 +1,5 @@
-function [pdp] = pdpCalc(h,Fs,plotMode,k,normalize,noiseThr)
-
+function [pdp] = pdpCalc(h,Fs,plotMode,k,normalize,noiseThr,idxref)
+    %idxref  fixed number, distance depended
     %%% PDP calculation of each realization
     for i=1:k
         hc=h(i,:)';
@@ -17,7 +17,7 @@ function [pdp] = pdpCalc(h,Fs,plotMode,k,normalize,noiseThr)
     end
 
 
-    idxref = 10; % fixed number, distance depended
+   
     if 1==1
        for i=1:k
            if idx(i)>idxref

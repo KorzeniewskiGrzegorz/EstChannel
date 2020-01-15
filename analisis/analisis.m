@@ -19,7 +19,7 @@ end
 
 %%%%%%% PDP
 
-pdp=pdpCalc(hc,Fs,1,k,1,noiseThr); 
+pdp=pdpCalc(hc,Fs,1,k,1,noiseThr,10); 
 
 
 t = 0:1/Fs:length(pdp)/Fs -1/Fs;

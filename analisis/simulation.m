@@ -4,10 +4,10 @@ clear all
 Fs = 38e6;
 noiseThr = 0.01; %normalized threshold
 path = "/home/udg/git/EstChannel/mediciones/ed_mecanica_abierto/17-dec-19/v3/";
-first= 1;
+first= 0;
 
 if first==1
-    k =1; % # of measurements
+    k =5; % # of measurements
     clusterFirstIdx = [4  6 12 15 19];
     clusterLastIdx  = [5 11 13 17 21];
 else

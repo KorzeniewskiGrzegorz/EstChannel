@@ -45,20 +45,21 @@ function [pdp] = pdpCalc(h,Fs,plotMode,k,normalize,noiseThr,idxref)
     end
     
 %%%% estimating pdp - mean
-    %pdp = mean(pdpc);
+    pdp = mean(pdpc);
 
-    pdp = pdpc(1:50); % pdp truncate
+    pdp = pdp(1:50); % pdp truncate
 
-    idx(i) = find(pdp > noiseThr , 1); 
+    idx(i) = find(pdp(i,:) > noiseThr , 1); 
 
     %idxref  fixed number, distance depended
 
-   if idx(i)>idxref
-       pdp = [pdp(idx(i)-idxref+1:end) zeros(1,idx(i)-idxref)];
-   else
-       pdp = [zeros(1,idxref-idx(i)) pdp(1:end-(idxref-idx(i)) )];
+   for i=1:k
+       if idx(i)>idxref
+           pdp = [pdpc(i,idx(i)-idxref+1:end) zeros(1,idx(i)-idxref)];
+       else
+           pdp = [zeros(1,idxref-idx(i)) pdpc(i,1:end-(idxref-idx(i)) )];
+       end
    end
-
 
 
 end

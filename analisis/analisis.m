@@ -3,8 +3,8 @@ clear all
 
 Fs = 38e6;
 noiseThr = 0.01; %normalized threshold
-path = "/home/udg/git/EstChannel/mediciones/ed_mecanica_abierto/17-dec-19/v1/";
-k =4;
+path = "/home/udg/git/EstChannel/mediciones/ed_mecanica_abierto/17-dec-19/v2/";
+load(path+'params.mat')
 
 for i=1:k
     fid=fopen(path +"Fs38-Fr2300-bw28-wd10--"+i+"_i"+".dat",'rb');

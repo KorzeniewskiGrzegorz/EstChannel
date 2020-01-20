@@ -45,9 +45,9 @@ function [pdp] = pdpCalc(h,Fs,plotMode,k,normalize,noiseThr,idxref)
     end
     
 %%%% estimating pdp - mean
-    %pdp = mean(pdpc);
+    pdp = mean(pdpc);
 
-    pdp = pdpc(1:50); % pdp truncate
+    pdp = pdp(1:50); % pdp truncate
 
     idx(i) = find(pdp > noiseThr , 1); 
 

@@ -1,4 +1,4 @@
-function [est] = minSq( x,y)
+function [est] = minSqExp( x,y)
 
     %modelo y=b* exp(-x/Gam)  +r, r es ruido , vamos a estimar el parametro Gam
     % x,y,  datos observados
@@ -27,12 +27,12 @@ function [est] = minSq( x,y)
     [value,ind] = min(U);
     est=rango(ind); % la solucion, el parametro estimado
 
-    figure
-    stem(x,y)
+    %figure
+    %stem(x,y)
    
-    hold on
-    plot(x,b*exp(-x/60));
-    hold off
+    %hold on
+   % plot(x,b*exp(-x/60));
+    %hold off
 
 end
 

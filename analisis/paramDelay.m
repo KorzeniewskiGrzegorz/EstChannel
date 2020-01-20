@@ -1,5 +1,8 @@
-function [tmeanNs,trmsNs,tmaxNs,b_50] = paramDelay(pdp,Fs,i,noiseThreshold)
+function [tmean,trms,tmax,b_50] = paramDelayNew(t,pdp,plotMode,noiseThreshold,i)
+%t [ns]
 format long
+
+if nargin<5, i=1;  end  
 
 l = length(pdp);
 noise = pdp (floor(4*l/5):end);
@@ -10,28 +13,27 @@ varianza = var(noise);
 maks=max(noise);
 Thd=noiseThreshold;
 
-
-s = find(pdp > Thd); 
-delays = (s-1)/Fs;
+[delays , pdp_f  ]=noiseFilterWithThr(t,pdp,Thd );
 
 
-    t = delays*1e9;
+if plotMode == 1
     figure
-    
-    stem(t,pdp(s))
-    title("pdp without noise n="+i)
-    
-    
-tmean =sum (delays .* pdp(s))/sum(pdp(s));
-tmeanNs=tmean/ 1e-9;
 
-trms = sqrt (  (sum(pdp(s) .* (delays -tmean).^2) / sum(pdp(s)) )  );
-trmsNs = trms/1e-9;
+    stem(delays,pdp_f)
+    title("pdp without noise n="+i)
+end
+    
+    
+tmean =sum (delays .* pdp_f)/sum(pdp_f);
+
+
+trms = sqrt (  (sum(pdp_f .* (delays -tmean).^2) / sum(pdp_f) )  );
+
 
 firstIdx = 1;
 lastIdx = length(delays);
 tmax= delays(lastIdx) - delays(firstIdx);
-tmaxNs = tmax/1e-9;
-b_50 = 1/(5*trms);
+
+b_50 = 1/(5*trms*1e-9);
 end
 

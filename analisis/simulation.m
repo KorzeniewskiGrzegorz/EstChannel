@@ -3,7 +3,8 @@ clear all
 
 Fs = 38e6;
 noiseThr = 0.01; %normalized threshold
-path = "/home/udg/git/EstChannel/mediciones/ed_mecanica_abierto/17-dec-19/v4/";
+plotMode = 0;
+path = "/home/udg/git/EstChannel/mediciones/ed_mecanica_abierto/17-dec-19/v3/";
 first= 0;
 
 if first==1
@@ -27,11 +28,11 @@ end
 
 %%%%%%% PDP measured
 
-pdp=pdpCalc(hc,Fs,0,k,1,noiseThr,1); %calculates averagePDP in the same location
+pdp=pdpCalc(hc,Fs,plotMode,k,1,noiseThr,1); %calculates averagePDP in the same location
 
 
 t = 0:1/Fs:length(pdp)/Fs -1/Fs;
-t=t*1e9;
+t=t*1e9; % [ns]
 
 figure
 grid on
@@ -40,11 +41,29 @@ stem(t,pdp)
 title('PDP')
 xlabel('delay[ns]'), ylabel('Magnitude') 
 hold on
+
+
+nClus = length(clusterFirstIdx);
+
+%%%Avg cluster arrival time
+
+deltaT= diff(clusterFirstIdx) / Fs * 1e9;
+
+Lam = 1/mean(deltaT);
+
+%%%Avg ray arrival time
+
+[tRay , pdp_f]=noiseFilterWithThr(t,pdp,noiseThr);
+
+deltaTRay = diff(tRay );
+
+lam=1/mean(deltaTRay);
+
 %%%% Cluster decay
 
 
 b002=1; % amplitude of first cluster (in normalized case is always 1)
-nClus = length(clusterFirstIdx);
+
 
 
 for i=1:nClus
@@ -55,7 +74,7 @@ end
 
 x=t(clusterFirstIdx) -t( clusterFirstIdx(1) );
 y= pdp(clusterFirstIdx);
-Gam=minSq( x,y);% [ns]
+Gam=minSqExp( x,y);% [ns]
 clusterDecay = b002*exp(-t/Gam);
 
 plot(t+(clusterFirstIdx(1)-1)/Fs*1e9,clusterDecay);
@@ -84,7 +103,7 @@ c =sortrows(c').';
 x=c(1,:);
 y=c(2,:);
 
-gam=minSq( x,y);% [ns]
+gam=minSqExp( x,y);% [ns]
  
 for i=1:nClus
     
@@ -97,28 +116,78 @@ for i=1:nClus
     
 end    
  hold off
-%%%%%%% PDP simulated
+ 
+ 
+
+%%%%%%% PDP simulation Saleh Valenzuela
  
 %MIMO-OFDM Wireless Communications with MATLAB��   Yong Soo Cho, Jaekwon Kim, Won Young Yang and Chung G. Kang 
 %2010 John Wiley & Sons (Asia) Pte Ltd 
  
 b002=1; % Power of 1st ray of 1st cluster  
-N=1 ; % Number of channels 
-Lam=0.0233; lambda=2.5; 
-Gamma=Gam; gamma=mean(gam); 
-sigma_x=3; % Standard deviation of log-normal shadowing 
+N= 1000; % Number of realizations
+Lambda = Lam; % cluster arrival time
+lambda=lam;  % ray arrival time
+Gamma=Gam; % cluster decay
+gamma=mean(gam); %ray decay
+sigma_x=0; % Standard deviation of log-normal shadowing 
 Nlos = 0; % 1 for Nlos, 0 for Los
 
-[hsim,tsim,t0sim,npsim]= SV_model_ct(Lam,lambda,Gamma,gamma,N,b002,sigma_x,Nlos);
-hsim=abs(hsim);
+[hsim,tsim,t0sim,npsim]= SV_model_ct(Lambda,lambda,Gamma,gamma,N,b002,sigma_x,Nlos);
 
-ryy= hsim*hsim';
-pdpsim = diag(ryy);
-pdpsim = pdpsim/max(pdpsim);
+
+for i=1:length(hsim)
+    ryy= hsim(:,1)*hsim(:,1)';
+    pdpsim = diag(ryy);
+    pdpsim = pdpsim/max(pdpsim);
+    
+   [tmeanSim(i),trmsSim(i),tmaxSim(i),b_50Sim(i)]=paramDelay(tsim(:,i), pdpsim,plotMode,noiseThr); 
+end
+
+
+%%% Parameter comparison
+
+ %measured
+[tmean,trms,tmax,b_50]=paramDelay(t, pdp,plotMode,0.01);
+
+ %simulated
+tmeanSim = mean(tmeanSim);
+trmsSim = mean(trmsSim);
+tmaxSim = mean(tmaxSim);
+b_50Sim = mean(b_50Sim);
+
+
+%%% Plotting results
+
+tsimPlot = tsim(:,length(tsim));
 
 figure
-stem(tsim,pdpsim,'ko');
+stem(tsimPlot,pdpsim); % one realization of model
 title('Simulated PDP') 
-xlabel('delay[ns]'), ylabel('Magnitude') 
+xlabel('delay[ns]'), ylabel('Norm. magnitude') 
+
+
+figure
+stem(t,pdp)
+leg{1} = "measured";
+hold on
+
+%%% alignment of plots to its maxes
+[v, dm] = max(pdp);
+[v, dsim] = max(pdpsim);
+
+offsetM = (dm-1)/Fs*1e9 ; % ns
+offsetS = tsimPlot(dsim);
+d = abs(dm-dsim);
+
+offset = abs(offsetM-offsetS);
+%%%
+
+stem(tsimPlot +offset,pdpsim)
+leg{2} = "simulated";
+legend(leg)
+title('Measured vs. Simulated ')
+xlabel('delay[ns]'), ylabel('Norm. magnitude') 
+hold off
 
 

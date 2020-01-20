@@ -3,8 +3,8 @@ clear all
 
 Fs = 38e6;
 noiseThr = 0.01; %normalized threshold
-path = "/home/udg/git/EstChannel/mediciones/ed_mecanica_abierto/17-dec-19/v2/";
-first= 1;
+path = "/home/udg/git/EstChannel/mediciones/ed_mecanica_abierto/17-dec-19/v4/";
+first=0;
 
 if first==1
     k =5; % # of measurements
@@ -55,7 +55,7 @@ end
 
 x=t(clusterFirstIdx) -t( clusterFirstIdx(1) );
 y= pdp(clusterFirstIdx);
-Gam=minSq( x,y);% [ns]
+Gam=minSqExp( x,y);% [ns]
 clusterDecay = b002*exp(-t/Gam);
 
 plot(t+(clusterFirstIdx(1)-1)/Fs*1e9,clusterDecay);
@@ -72,7 +72,7 @@ for i=1:nClus
     x= t( raysIdxs ) -t( idx );
     y= pdp(raysIdxs);
     
-    gam(i)=minSq( x,y);% [ns]
+    gam(i)=minSqExp( x,y);% [ns]
     rayDecay = b*exp(-t/gam(i));
 
     plot(t+(idx-1)/Fs*1e9,rayDecay);
@@ -83,6 +83,11 @@ end
 hold off
  
  
+%%%%%% gamma function
+x=t(clusterFirstIdx) -t( clusterFirstIdx(1) );
+gamFunb= minSqLin( x, gam, gam(1)); % [ns]
+
+
 %%%%%%% PDP simulated
  
 %MIMO-OFDM Wireless Communications with MATLAB��   Yong Soo Cho, Jaekwon Kim, Won Young Yang and Chung G. Kang 

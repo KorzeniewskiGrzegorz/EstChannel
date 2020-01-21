@@ -1,4 +1,4 @@
-function [tmean,trms,tmax,b_50] = paramDelayNew(t,pdp,plotMode,noiseThreshold,i)
+function [tmean,trms,tmax,b_50] = paramDelay(t,pdp,plotMode,noiseThreshold,i)
 %t [ns]
 format long
 

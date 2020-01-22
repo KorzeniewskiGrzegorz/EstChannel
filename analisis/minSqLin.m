@@ -15,23 +15,23 @@ function [est] = minSqLin( x,y,a)
 
     end
 
-    figure
-    plot(x,y);
+    %figure
+    %plot(x,y);
     
-    figure
-    plot(rango,U)
-    xlabel("theta")
+    %figure
+    %plot(rango,U)
+    %xlabel("theta")
    %ylabel("U(theta)")
 
     [value,ind] = min(U);
     est=rango(ind); % la solucion, el parametro estimado
 
-    figure
-    stem(x,y)
+    %figure
+    %stem(x,y)
    
-    hold on
-    plot(x,a +est*x);
-    hold off
+    %hold on
+    %plot(x,a +est*x);
+    %hold off
 
 end
 

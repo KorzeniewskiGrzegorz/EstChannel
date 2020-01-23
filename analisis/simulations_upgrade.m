@@ -3,7 +3,7 @@ clear all
 
 Fs = 38e6;
 noiseThr = 0.01; %normalized threshold
-path = "/home/udg/git/EstChannel/mediciones/ed_mecanica_abierto/17-dec-19/v4/";
+path = "/home/udg/git/EstChannel/mediciones/ed_mecanica_abierto/17-dec-19/Rx4/";
 first=0;
 
 if first==1
@@ -40,6 +40,22 @@ stem(t,pdp)
 title('PDP')
 xlabel('delay[ns]'), ylabel('Magnitude') 
 hold on
+
+%%%Avg cluster arrival time
+
+deltaT= diff(clusterFirstIdx) / Fs * 1e9;
+
+Lam = 1/mean(deltaT);
+
+%%%Avg ray arrival time
+
+[tRay , pdp_f]=noiseFilterWithThr(t,pdp,noiseThr);
+
+deltaTRay = diff(tRay );
+
+lam=1/mean(deltaTRay);
+
+
 %%%% Cluster decay
 
 
@@ -84,9 +100,10 @@ hold off
  
  
 %%%%%% gamma function
-x=t(clusterFirstIdx) -t( clusterFirstIdx(1) );
-gamFunb= minSqLin( x, gam, gam(1)); % [ns]
-
+x=t(clusterFirstIdx);
+p=polyfit(x, gam,1); % [ns]
+a = p(1);
+gam0 = p(2);
 
 %%%%%%% PDP simulated
  
@@ -95,12 +112,14 @@ gamFunb= minSqLin( x, gam, gam(1)); % [ns]
  
 b002=1; % Power of 1st ray of 1st cluster  
 N=1 ; % Number of channels 
-Lam=0.0233; lambda=2.5; 
-Gamma=Gam; gamma=mean(gam); 
-sigma_x=3; % Standard deviation of log-normal shadowing 
+Lambda = Lam; % cluster arrival time
+lambda=lam;  % ray arrival time
+Gamma=Gam; % cluster decay 
+sigma_x=1; % Standard deviation of log-normal shadowing 
 Nlos = 0; % 1 for Nlos, 0 for Los
 
-[hsim,tsim,t0sim,npsim]= SV_model_ct(Lam,lambda,Gamma,gamma,N,b002,sigma_x,Nlos);
+[hsim,tsim,t0sim,npsim]= SVUPGR_model(Lam,lambda,Gamma,gam0,a,N,b002,sigma_x,Nlos);
+
 hsim=abs(hsim);
 
 ryy= hsim*hsim';

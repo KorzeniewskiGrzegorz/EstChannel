@@ -1,4 +1,4 @@
-function [tSim,pdpSim , Lambda,lambda,Gamma,gamma] = simulationSalehValenzuela(pdp, Fs,clusterFirstIdx,clusterLastIdx,noiseThr)
+function [tSim,pdpSim , Lambda,lambda,Gamma,gamma,gam0,a] = SalehValCalcFunc(pdp, Fs,clusterFirstIdx,clusterLastIdx,noiseThr)
 
 
 t = 0:1/Fs:length(pdp)/Fs -1/Fs;
@@ -43,47 +43,41 @@ end
 
 x=t(clusterFirstIdx) -t( clusterFirstIdx(1) );
 y= pdp(clusterFirstIdx);
-Gam=minSqExp( x,y);% [ns]
+Gam=minSqExp( x,y) +10;% [ns]
 clusterDecay = b002*exp(-t/Gam);
 
 plot(t+(clusterFirstIdx(1)-1)/Fs*1e9,clusterDecay);
 
-
 %Ray decays
 
-x=[];
-y=[];
+
 for i=1:nClus
     
     idx = clusterFirstIdx(i);% first sample index
-    b=pdp(idx); % first sample amplitude
+    b=pdp(idx); % sample amplitude
     raysIdxs=cell2mat(raysInClusterIdx(i));
     
-    x=[x (t( raysIdxs ) -t( idx ) )];
-    y=[y (pdp(raysIdxs)/b)];
+    x= t( raysIdxs ) -t( idx );
+    y= pdp(raysIdxs);
     
+    gam(i)=minSqExp( x,y);% [ns]
+    rayDecay = b*exp(-t/gam(i));
+
+    plot(t+(idx-1)/Fs*1e9,rayDecay);
     
     
 end
 
-%data sort
-c= [x;y];
-c =sortrows(c').';
-x=c(1,:);
-y=c(2,:);
-
-gam=minSqExp( x,y);% [ns]
+hold off
  
-for i=1:nClus
-    
-    idx = clusterFirstIdx(i);% first sample index
-    b=pdp(idx); % first sample amplitude
-    
-    rayDecay = b*exp(-t/gam);
-
-    plot(t+(idx-1)/Fs*1e9,rayDecay);
-    
-end    
+ 
+%%%%%% gamma function
+x=t(clusterFirstIdx);
+p=polyfit(x, gam,1); % [ns]
+a = p(1);
+gam0 = p(2);
+ 
+ 
  hold off
  
  
@@ -98,11 +92,11 @@ N= 1; % Number of realizations
 Lambda = Lam; % cluster arrival time
 lambda=lam;  % ray arrival time
 Gamma=Gam; % cluster decay
-gamma=mean(gam); %ray decay
+gamma=gam; %ray decay
 sigma_x=1; % Standard deviation of log-normal shadowing 
 Nlos = 0; % 1 for Nlos, 0 for Los
 
-[hsim,tSim,t0sim,npsim]= SV_model_ct(Lambda,lambda,Gamma,gamma,N,b002,sigma_x,Nlos);
+[hsim,tSim,t0sim,npsim]= SVUPGR_model(Lambda,lambda,Gamma,gam0,a,N,b002,sigma_x,Nlos);
 
 
     ryy= hsim*hsim';

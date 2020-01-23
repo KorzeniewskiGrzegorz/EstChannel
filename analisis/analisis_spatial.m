@@ -77,19 +77,35 @@ hold off
 
 
 
-%%% spatial PDP average
+%%% spatial PDP
 
+
+%%%%%% data align to its max
+for i=1:k
+    [v, idx(i)] = max(pdpx(i,:));
+end
+
+preAlignIdx=4;
+for i=1:k
+   if idx(i)>preAlignIdx
+       pdpx(i,:) = [pdpx(i,idx(i)-preAlignIdx+1:end) zeros(1,idx(i)-preAlignIdx)];
+   else
+       pdpx(i,:) = [zeros(1,preAlignIdx-idx(i)) pdpx(i,1:end-(preAlignIdx-idx(i)) )];
+   end
+end
+
+%%% avg
 sPDP = mean(pdpx);
-sPDP = sPDP/max(sPDP);
+
 
 [tmeanSp,trmsSp,tmaxSp,b_50Sp]=paramDelay(t, sPDP,plotMode,noiseThr);
 
 %%% simulation Saleh Valenzuela
 
-clusterFirstIdx = [6 9  11 15 18];
-clusterLastIdx  = [8 10 14 17 22];
+clusterFirstIdx = [4  6 12 16];
+clusterLastIdx  = [5 10 15 18];
 
-[ tSim ,pdpSim, Lambda,lambda,Gamma,gamma] =  simulationSalehValenzuela(sPDP,Fs,clusterFirstIdx,clusterLastIdx,noiseThr);
+[ tSim ,pdpSim, Lambda,lambda,Gamma,gamma,gam0,a] =  SalehValCalcFunc(sPDP,Fs,clusterFirstIdx,clusterLastIdx,noiseThr);
 
 [tmeanSim,trmsSim,tmaxSim,b_50Sim]=paramDelay(tSim, pdpSim,plotMode,noiseThr);
 
@@ -98,7 +114,7 @@ clusterLastIdx  = [8 10 14 17 22];
 figure
 stem(t,sPDP,'black')
 
-title("PDP of the building")
+title("PDP Measured vs Simulated")
 xlabel('delay[ns]'), ylabel('Norm. magnitude [AU]') 
 grid on
 hold on
@@ -115,7 +131,7 @@ offset = abs(offsetM-offsetS);
 %%%
 
 plot(tSim + offset,pdpSim,'r--')
-axis([0 1000 0 1])
+axis([0 700 0 1])
 
 leg{1} = "Measured";
 leg{2} = "Simulated";

@@ -28,8 +28,8 @@ for j=1:measurePoints
 
 
     %%%%%%% PDP
-
-    pdp=pdpCalc(hc,Fs,0,k,1,noiseThr,4);
+    [pdp]=pdpCalc(hc,Fs,0,k,1,noiseThr,4);
+    %[pdp,piki(j,:)]=pdpCalc(hc,Fs,0,k,1,noiseThr,4);
     pdpx(j,:) = pdp;
 
 

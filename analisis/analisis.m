@@ -4,7 +4,7 @@ clear all
 Fs = 38e6;
 noiseThr = 0.01; %normalized threshold
 plotMode = 0 ;
-path = "/home/udg/git/EstChannel/mediciones/ed_mecanica_abierto/17-dec-19/Rx4/";
+path = "/home/udg/git/EstChannel/mediciones/ed_mecanica_abierto/17-dec-19/Rx1/";
 load(path+'params.mat')
 
 for i=1:k
@@ -15,6 +15,8 @@ for i=1:k
     himag(i,:)=fread(fid,'double');
     
     hc(i,:)=abs(complex(hreal(i,:),himag(i,:)));
+    
+    
 end
 
 

@@ -3,7 +3,7 @@ clear all
 
 Fs = 38e6;
 noiseThr = 0.01; %normalized threshold
-path = "/home/udg/git/EstChannel/mediciones/ed_mecanica_abierto/17-dec-19/Rx4/";
+path = "/home/udg/git/EstChannel/mediciones/ed_mecanica_abierto/17-dec-19/Rx1/";
 first=0;
 
 if first==1

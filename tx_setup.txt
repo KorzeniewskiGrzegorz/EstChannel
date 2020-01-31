@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cp ~/Desktop/2020_signal_sources/pomoc/power/power.bin /dev/shm
+cp ~/Desktop/2020_signal_sources/38MHzR001/tx.bin /dev/shm/
+
+bladeRF-cli  -e "set smb_mode input"
+bladeRF-cli  -e "set gain tx 73"

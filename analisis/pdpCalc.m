@@ -1,16 +1,19 @@
 function [pdp] = pdpCalc(h,Fs,plotMode,k,normalize,noiseThr,idxref)
+%[pdp,piki] = pdpCalc(h,Fs,plotMode,k,normalize,noiseThr,idxref)
     %idxref  fixed number, distance depended
     %%% PDP calculation of each realization
     for i=1:k
         hc=h(i,:)';
         ryy= hc*hc';
         pdpc(i,:) = diag(ryy);
+        %piki(i)=max(pdpc(i,:));
         if normalize == 1
             pdpc(i,:) = pdpc(i,:)/max(pdpc(i,:));
         end
         
     end
     
+   % piki=max(piki);
     %%%%%% data align to its max
     for i=1:k
         [v, idx(i)] = max(pdpc(i,:));
@@ -45,9 +48,9 @@ function [pdp] = pdpCalc(h,Fs,plotMode,k,normalize,noiseThr,idxref)
     end
     
 %%%% estimating pdp - mean
-    %pdp = mean(pdpc);
+    pdp = mean(pdpc);
 
-    pdp = pdpc(1:50); % pdp truncate
+    pdp = pdp(1:50); % pdp truncate
 
     idx(i) = find(pdp > noiseThr , 1); 
 

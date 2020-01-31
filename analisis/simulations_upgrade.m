@@ -3,8 +3,8 @@ clear all
 
 Fs = 38e6;
 noiseThr = 0.01; %normalized threshold
-path = "/home/udg/git/EstChannel/mediciones/ed_mecanica_abierto/17-dec-19/v2/";
-first= 1;
+path = "/home/udg/git/EstChannel/mediciones/ed_mecanica_abierto/17-dec-19/Rx1/";
+first=0;
 
 if first==1
     k =5; % # of measurements
@@ -40,6 +40,22 @@ stem(t,pdp)
 title('PDP')
 xlabel('delay[ns]'), ylabel('Magnitude') 
 hold on
+
+%%%Avg cluster arrival time
+
+deltaT= diff(clusterFirstIdx) / Fs * 1e9;
+
+Lam = 1/mean(deltaT);
+
+%%%Avg ray arrival time
+
+[tRay , pdp_f]=noiseFilterWithThr(t,pdp,noiseThr);
+
+deltaTRay = diff(tRay );
+
+lam=1/mean(deltaTRay);
+
+
 %%%% Cluster decay
 
 
@@ -55,7 +71,7 @@ end
 
 x=t(clusterFirstIdx) -t( clusterFirstIdx(1) );
 y= pdp(clusterFirstIdx);
-Gam=minSq( x,y);% [ns]
+Gam=minSqExp( x,y);% [ns]
 clusterDecay = b002*exp(-t/Gam);
 
 plot(t+(clusterFirstIdx(1)-1)/Fs*1e9,clusterDecay);
@@ -72,7 +88,7 @@ for i=1:nClus
     x= t( raysIdxs ) -t( idx );
     y= pdp(raysIdxs);
     
-    gam(i)=minSq( x,y);% [ns]
+    gam(i)=minSqExp( x,y);% [ns]
     rayDecay = b*exp(-t/gam(i));
 
     plot(t+(idx-1)/Fs*1e9,rayDecay);
@@ -83,6 +99,12 @@ end
 hold off
  
  
+%%%%%% gamma function
+x=t(clusterFirstIdx);
+p=polyfit(x, gam,1); % [ns]
+a = p(1);
+gam0 = p(2);
+
 %%%%%%% PDP simulated
  
 %MIMO-OFDM Wireless Communications with MATLAB��   Yong Soo Cho, Jaekwon Kim, Won Young Yang and Chung G. Kang 
@@ -90,12 +112,14 @@ hold off
  
 b002=1; % Power of 1st ray of 1st cluster  
 N=1 ; % Number of channels 
-Lam=0.0233; lambda=2.5; 
-Gamma=Gam; gamma=mean(gam); 
-sigma_x=3; % Standard deviation of log-normal shadowing 
+Lambda = Lam; % cluster arrival time
+lambda=lam;  % ray arrival time
+Gamma=Gam; % cluster decay 
+sigma_x=1; % Standard deviation of log-normal shadowing 
 Nlos = 0; % 1 for Nlos, 0 for Los
 
-[hsim,tsim,t0sim,npsim]= SV_model_ct(Lam,lambda,Gamma,gamma,N,b002,sigma_x,Nlos);
+[hsim,tsim,t0sim,npsim]= SVUPGR_model(Lam,lambda,Gamma,gam0,a,N,b002,sigma_x,Nlos);
+
 hsim=abs(hsim);
 
 ryy= hsim*hsim';

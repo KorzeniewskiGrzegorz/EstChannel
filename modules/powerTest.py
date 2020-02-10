@@ -9,12 +9,12 @@ def txSet(Fr,Fs,bw):
         "set frequency tx "+str(Fr)+
         ";set samplerate tx "+str(Fs)+
 	";set bandwidth tx "+str(bw)+
-        ";tx config file=/dev/shm/tx.bin"+
-        ";tx config repeat=2 delay=0"+
+        ";tx config file=/dev/shm/power.bin"+
+        ";tx config repeat=0 delay=0"+
         ";tx start"+
         ";tx wait\"")
 
-def blader_Tx(sr,fr,bw,e):
+def powerTest(sr,fr,bw,e):
 
     def finish(e):
         end = time.time()
@@ -41,7 +41,7 @@ if __name__ == '__main__':
     
 
     result_available = threading.Event()
-    thread = threading.Thread(target=blader_Tx, args=(Fs,Fr,bw,result_available,))
+    thread = threading.Thread(target=powerTest, args=(Fs,Fr,bw,result_available,))
     thread.start()
     print("transmitting...")
     result_available.wait()

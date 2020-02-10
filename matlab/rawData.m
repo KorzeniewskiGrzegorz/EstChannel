@@ -14,38 +14,38 @@ path="/dev/shm/";
 
 
 %%%%%%%%%5%%%%%%%%%%%%%
-%fid=fopen(path+"ruidoR.dat",'rb');
-%ruidoR=fread(fid,'float');
+fid=fopen(path+"ruidoR.dat",'rb');
+ruidoR=fread(fid,'float');
 
-%fid=fopen(path+"ruidoI.dat",'rb');
-%ruidoI=fread(fid,'float');
+fid=fopen(path+"ruidoI.dat",'rb');
+ruidoI=fread(fid,'float');
 
-fid=fopen(path+"fdataR.dat",'rb');
-bdataR=fread(fid,'float');
+%fid=fopen(path+"fdataR.dat",'rb');
+%bdataR=fread(fid,'float');
 
-fid=fopen(path+"fdataI.dat",'rb');
-bdataI=fread(fid,'float');
+%fid=fopen(path+"fdataI.dat",'rb');
+%bdataI=fread(fid,'float');
 
-bdataR = bdataR(1:2*Fs);
-bdataI = bdataI(1:2*Fs);
+%bdataR = bdataR(1:2*Fs);
+%bdataI = bdataI(1:2*Fs);
 
-lenDRaw=length(bdataR(:,1));
+lenDRaw=length(ruidoR(:,1));
 
-%ruidoC=complex(ruidoR,ruidoI); 
-bdataC=complex(bdataR,bdataI); 
+ruidoC=complex(ruidoR,ruidoI); 
+%bdataC=complex(bdataR,bdataI); 
 
 
 %y = doFilterLow(dataC);
 
 %clear ruidoR
 %clear ruidoI
-clear dataR
-clear dataI
+%clear dataR
+%clear dataI
 %Raw data plotting
 
 figure
 
-plot(0:1/Fs:lenDRaw/Fs-1/Fs,real(bdataC)+ imag(bdataC))%,0:1/Fs:lenDRaw/Fs-1/Fs,dataI)
+plot(0:1/Fs:lenDRaw/Fs-1/Fs,real(ruidoC)+ imag(ruidoC))%,0:1/Fs:lenDRaw/Fs-1/Fs,dataI)
 title('bad')
 xlabel('time [s]')
 

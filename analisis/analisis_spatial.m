@@ -110,6 +110,13 @@ clusterLastIdx  = [5 10 15 18];
 [tmeanSim,trmsSim,tmaxSim,b_50Sim]=paramDelay(tSim, pdpSim,plotMode,noiseThr);
 
 %%% results
+figure
+stem(t,sPDP,'black')
+
+title("Spatially-averaged PDP")
+xlabel('delay[ns]'), ylabel('Norm. magnitude [AU]') 
+grid on
+axis([0 700 0 1])
 
 figure
 stem(t,sPDP,'black')

@@ -14,9 +14,13 @@ function [pdp] = pdpCalc(h,Fs,plotMode,k,normalize,noiseThr,idxref)
     end
     
    % piki=max(piki);
-    %%%%%% data align to its max
+    
     for i=1:k
-        [v, idx(i)] = max(pdpc(i,:));
+        %[v, idx(i)] = max(pdpc(i,:)); %%%%%% data align to its max
+
+        s = find(pdpc(i,:) > noiseThr); %%%%%% data align to first component over thrs
+        idx(i) = s(1);
+
     end
 
     preAlignIdx=10;
@@ -39,12 +43,24 @@ function [pdp] = pdpCalc(h,Fs,plotMode,k,normalize,noiseThr,idxref)
         hold on
         grid on
         for i=1:k
-                stem(t,pdpc(i,:))
-                title('PDP ')
-                leg{i} = sprintf('n = %i',i);
+            stem(t,pdpc(i,:))
+            title('PDP all')
+            leg{i} = sprintf('n = %i',i);
         end
         hold off
         legend(leg)
+        
+        for i=1:k
+            figure
+            
+            pdpcT(i,:) = pdpc(i,1:50);
+             t = 0:1/Fs:length(pdpcT(i,:))/Fs -1/Fs;
+            stem(t,pdpcT(i,:))
+            title('PDP single')
+            grid on
+        end
+        
+        
     end
     
 %%%% estimating pdp - mean

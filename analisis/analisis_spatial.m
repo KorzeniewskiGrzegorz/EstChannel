@@ -1,19 +1,20 @@
-close all
+%close all
 clear all
 
 Fs = 38e6;
 noiseThr = 0.01; %normalized threshold
 plotMode = 0;
 
-measurePoints=4;
+measurePoints=5;
 
 distance(1)= 15; % tx-rx separation v1[m]
 distance(2)= 20;
 distance(3)= 28;
 distance(4)= 36;
-
+distance(5)= 36;
 for j=1:measurePoints
-    path = "/home/udg/git/EstChannel/mediciones/ed_mecanica_abierto/17-dec-19/Rx"+j+"/";
+    %path = "/home/udg/git/EstChannel/mediciones/ed_mecanica_abierto/17-dec-19/Rx"+j+"/";
+    path="/home/udg/git/EstChannel/mediciones/quimica/7-02-2020/v"+j+"/";
     load(path+'params.mat')
 
     for i=1:k
@@ -81,12 +82,12 @@ hold off
 
 
 %%%%%% data align to its max
-for i=1:k
+for i=1:measurePoints
     [v, idx(i)] = max(pdpx(i,:));
 end
 
 preAlignIdx=4;
-for i=1:k
+for i=1:measurePoints
    if idx(i)>preAlignIdx
        pdpx(i,:) = [pdpx(i,idx(i)-preAlignIdx+1:end) zeros(1,idx(i)-preAlignIdx)];
    else

@@ -1,20 +1,20 @@
-%close all
+close all
 clear all
 
 Fs = 38e6;
 noiseThr = 0.01; %normalized threshold
 plotMode = 0;
-
-measurePoints=5;
+measurePoints=4;
+%measurePoints=5;
 
 distance(1)= 15; % tx-rx separation v1[m]
 distance(2)= 20;
 distance(3)= 28;
 distance(4)= 36;
-distance(5)= 36;
+%distance(5)= 36;
 for j=1:measurePoints
-    %path = "/home/udg/git/EstChannel/mediciones/ed_mecanica_abierto/17-dec-19/Rx"+j+"/";
-    path="/home/udg/git/EstChannel/mediciones/quimica/7-02-2020/v"+j+"/";
+    path = "/home/udg/git/EstChannel/mediciones/ed_mecanica_abierto/17-dec-19/Rx"+j+"/";
+    %path="/home/udg/git/EstChannel/mediciones/quimica/7-02-2020/v"+j+"/";
     load(path+'params.mat')
 
     for i=1:k
@@ -97,6 +97,8 @@ end
 
 %%% avg
 sPDP = mean(pdpx);
+
+sPDP = sPDP / max(sPDP);
 
 
 [tmeanSp,trmsSp,tmaxSp,b_50Sp]=paramDelay(t, sPDP,plotMode,noiseThr);

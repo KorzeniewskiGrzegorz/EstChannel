@@ -50,3 +50,19 @@ xlim([0.45 0.65])
 
 
 %%% SET FONT 30
+
+
+%%% version espanol
+
+%windows
+figure
+plot(t(Fs*0.6:Fs*0.7) , IData(Fs*0.6:Fs*0.7))
+xlabel("Tiempo [s]")
+ylabel("Magnitud norm. [u.a.]")
+
+%syncpulse
+figure
+plot(t(Fs*0.45:Fs*0.65) , IData(Fs*0.45:Fs*0.65))
+xlabel("Tiempo [s]")
+ylabel("Magnitud norm. [u.a.]")
+xlim([0.45 0.65])

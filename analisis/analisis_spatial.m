@@ -40,7 +40,9 @@ for j=1:measurePoints
     figure
     stem(t,pdp,'black')
     title("PDP Rx"+j)
-    xlabel('delay[ns]'), ylabel('Norm. magnitude [AU]') 
+    %xlabel('delay[ns]'), ylabel('Norm. magnitude [AU]') 
+    xlabel('Retardo [ns]'), ylabel('Magnitud norm. [u.a.]')  
+    axis([0 700 0 1])
     grid on
 
     [tmean(j),trms(j),tmax(j),b_50(j)]=paramDelay(t, pdp,plotMode,noiseThr);

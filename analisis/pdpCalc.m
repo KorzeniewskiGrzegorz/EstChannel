@@ -16,10 +16,10 @@ function [pdp] = pdpCalc(h,Fs,plotMode,k,normalize,noiseThr,idxref)
    % piki=max(piki);
     
     for i=1:k
-        [v, idx(i)] = max(pdpc(i,:)); %%%%%% data align to its max
+        %[v, idx(i)] = max(pdpc(i,:)); %%%%%% data align to its max
 
-        %s = find(pdpc(i,:) > noiseThr); %%%%%% data align to first component over thrs
-        %idx(i) = s(1);
+        s = find(pdpc(i,:) > noiseThr); %%%%%% data align to first component over thrs
+        idx(i) = s(1);
 
     end
 

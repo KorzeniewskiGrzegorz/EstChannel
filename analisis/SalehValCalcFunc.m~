@@ -98,16 +98,14 @@ Nlos = type; % 1 for Nlos, 0 for Los
 
 [hsim,tSim,t0sim,npsim]= SVUPGR_model(Lambda,lambda,Gamma,gam0,a,N,b002,sigma_x,Nlos);
 
-    for i=1:N
+    for i=1:1000
 
-        ryy= hsim(:,i)*hsim(:,i)';
-        pdpSim(i,:) = diag(ryy)';
-        pdpSim(i,:) = pdpSim(i,:)/max(pdpSim(i,:));
+        ryy= hsim(:,1)*hsim(:,1)';
+        pdpSim(i,: = diag(ryy);
+        pdpSim(i,:) = pdpSim/max(pdpSim);
         
-       
+        [tmeanSim(i),trmsSim(i),tmaxSim(i),b_50Sim(i)]=paramDelay(tSim(:,1), pdpSim,0,0.01);
 
     end
-    
-    tSim = tSim';
 
 end

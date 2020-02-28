@@ -60,8 +60,8 @@ x2 = 40;
 %ylabel("RMS delay [ns]")  
 
 title("Retardo RMS vs distancia Tx-Rx")
-xlabel("distancia Tx-Rx [m]")
-ylabel("Retardo RMS [ns]")  
+xlabel("Tx-Rx separation [m]")
+ylabel("RMS delay [ns]")  
 
 grid on
 hold on
@@ -74,8 +74,7 @@ tcurve = 12:40;
 
 loglog(tcurve,a* (tcurve).^b,'r--')
 
-%leg{1} = "Measured";
-leg{1} = "Medido";
+leg{1} = "Measured";
 leg{2} = "p="+b;
 legend(leg)
 legend('Location','southeast')
@@ -93,7 +92,7 @@ for i=1:measurePoints
     [v, idx(i)] = max(pdpx(i,:));
 end
 
-preAlignIdx=6;
+preAlignIdx=4;
 for i=1:measurePoints
    if idx(i)>preAlignIdx
        pdpx(i,:) = [pdpx(i,idx(i)-preAlignIdx+1:end) zeros(1,idx(i)-preAlignIdx)];
@@ -112,8 +111,8 @@ sPDP = sPDP / max(sPDP);
 
 %%% simulation Saleh Valenzuela
 
-clusterFirstIdx = [6  8 14 18];
-clusterLastIdx  = [7 12 17 20];
+clusterFirstIdx = [4  6 12 16];
+clusterLastIdx  = [5 10 15 18];
 type = 0; % 0 for LoS, 1 for NLoS
 
 [ tSim ,pdpSim, Lambda,lambda,Gamma,gamma,gam0,a] =  SalehValCalcFunc(sPDP,Fs,clusterFirstIdx,clusterLastIdx,type,noiseThr);

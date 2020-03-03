@@ -1,0 +1,10 @@
+close all
+clear all
+
+N=10000;
+
+noise = randn(1,N);
+
+figure
+plot(noise)
+xlabel("Muestras [u.a.]);

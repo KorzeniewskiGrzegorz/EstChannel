@@ -1,0 +1,12 @@
+close all
+clear all
+
+N=10000;
+
+noise = randn(1,N);
+
+figure
+plot(noise)
+title('Dominio de tiempo')
+xlabel("Muestras [u.a.]);
+ylabel("Amplitud [u.a.]);

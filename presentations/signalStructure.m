@@ -39,13 +39,14 @@ t = 0:1/Fs:(data_len-1)/Fs;
 figure
 plot(t(Fs*0.6:Fs*0.7) , IData(Fs*0.6:Fs*0.7))
 xlabel("Time [s]")
-ylabel("Norm. magnitude [AU]")
-
+ylabel("Norm. magnitude [arb. unit]")
+xlim([0.6 0.6002])
+ylim([-1 1])
 %syncpulse
 figure
 plot(t(Fs*0.45:Fs*0.65) , IData(Fs*0.45:Fs*0.65))
 xlabel("Time [s]")
-ylabel("Norm. magnitude [AU]")
+ylabel("Norm. magnitude [arb. unit]")
 xlim([0.45 0.65])
 
 
